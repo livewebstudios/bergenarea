@@ -1,4 +1,5 @@
 ---
+import Logo from '../../../components/shared/Logo.astro';
 /* The printable meeting list (replaces the old bread PDF). Same data, laid out for US Letter. */
 import '../../../styles/meetings.css';
 import Site from '../../../layouts/Site.astro';
@@ -23,7 +24,7 @@ const legend = (() => {
   <section class="d1-band grain pr-band">
     <div class="wrap pr-sheet">
       <header class="pr-head">
-        <img class="pr-logo" src={href('img/logo.png')} alt={deck.site.logoAlt} width="200" height="43" />
+        <Logo class="pr-logo" eager />
         <div class="pr-head__text">
           <h1 class="d1-display pr-title">{meetingsPage.printed}</h1>
           <p class="pr-meta">{ui.printed}: <span data-printed>{buildDate}</span></p>

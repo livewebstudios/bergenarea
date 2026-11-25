@@ -3,7 +3,7 @@
 const RAW_BASE: string = import.meta.env.BASE_URL || '/';
 const BASE = RAW_BASE.endsWith('/') ? RAW_BASE : RAW_BASE + '/';
 
-/** Internal route or public asset. href('meetings/') or href('img/logo.png'). */
+/** Internal route or public asset. href('meetings/') or href('img/logo.svg'). */
 export function href(path = ''): string {
   return BASE + path.replace(/^\/+/, '');
 }

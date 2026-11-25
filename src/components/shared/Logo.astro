@@ -1,10 +1,11 @@
 ---
-/* The one place the logo lives. A rebrand is coming: swap public/img/logo.png and the
-   numbers below. Light grounds only (paper, sand, white). Never wider than 312px. */
+/* The one place the logo lives: the Bergen Area wordmark with the NJ mark (docs/logo/, color version).
+   Light grounds only (paper, sand, white). Never wider than 312px. */
 import { href } from '../../lib/href';
+import { deck } from '../../content/deck';
 interface Props { width?: number; class?: string; eager?: boolean }
 const { width = 200, class: cls = '', eager = false } = Astro.props;
 const w = Math.min(width, 312);
-const h = Math.round((w * 67) / 312);
+const h = Math.round((w * 110.5) / 466.1);
 ---
-<img class={`logo ${cls}`} src={href('img/logo.png')} alt="Bergen Area of Narcotics Anonymous" width={w} height={h} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+<img class={`logo ${cls}`.trim()} src={href('img/logo.svg')} alt={deck.site.logoAlt} width={w} height={h} loading={eager ? 'eager' : 'lazy'} decoding={eager ? undefined : 'async'} />

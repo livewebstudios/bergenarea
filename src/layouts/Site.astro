@@ -8,6 +8,7 @@ import '@fontsource/patrick-hand/latin-400.css';
 import '../styles/site.css';
 import '../styles/pages.css';
 import Base from './Base.astro';
+import Logo from '../components/shared/Logo.astro';
 import HelplineBar from '../components/shared/HelplineBar.astro';
 import { Icon } from '../components/shared/icons/Icon';
 import Notice1 from '../components/site/Notice';
@@ -40,7 +41,7 @@ const notice = noticeFile as Notice;
 
   <header class="d1-nav" data-nav>
     <div class="wrap d1-nav__in">
-      <a class="d1-nav__logo" href={route('home')} aria-current={home ? 'page' : undefined}><img src={href('img/logo.png')} alt={deck.site.logoAlt} width="200" height="43" /></a>
+      <a class="d1-nav__logo" href={route('home')} aria-current={home ? 'page' : undefined}><Logo eager /></a>
       <button type="button" class="d1-nav__menu" data-nav-toggle aria-expanded="false" aria-controls="site-menu"><Icon name="menu" /><span>{ui.menu}</span></button>
       <nav id="site-menu" class="d1-nav__links" aria-label={ui.menu}>
         <ul>
@@ -71,7 +72,7 @@ const notice = noticeFile as Notice;
   <footer class="d1-footer grain">
     <div class="wrap d1-footer__in">
       <div class="d1-footer__brand">
-        <img src={href('img/logo.png')} alt={deck.site.logoAlt} width="200" height="43" loading="lazy" decoding="async" />
+        <Logo />
         <p class="d1-footer__help">{h.before}<a href={h.first.href}>{h.first.label}</a><span class="nowrap">{h.between}<a href={h.second.href}>{h.second.label}</a>{h.after}</span></p>
         <p><a href={`mailto:${deck.site.email}`}>{deck.site.email}</a></p>
       </div>
