@@ -99,3 +99,33 @@ No marketing copy was written. The meta description on all routes is a verbatim 
 
 ### K14. Night-owl handling
 A meeting that runs past midnight still counts as "now" after midnight (none do today, the code and test cover it).
+
+## Demo 1: Open Road (task 3)
+
+### O1. The heading over today's list
+No new headlines are allowed, so the finder's H2 is the approved day word for whatever tab is selected: `Today`, `Tomorrow`, or the day name. It doubles as the section heading for the heading outline.
+
+### O2. Day tabs
+Sunday to Saturday in a fixed order, short names on the pills (full names for screen readers), today's pill circled by hand in rust. Demo 2 uses a different order on purpose (see T2).
+
+### O3. How the dotted path stays off the text
+Each section holds its own stretch of the path, painted after the section's ground and before its content, so the line is always behind cards and never over a paragraph. A stretch runs down one side gutter and crosses the page only inside the empty padding at the top and bottom of a section. That needs side gutters of at least 58px, which is a viewport of about 1270px. Below that, every screen gets the "mobile" treatment from the handoff: a straight dotted line down the left edge with a dot at each section.
+With JavaScript off the wandering path is absent and the straight line shows at every width.
+
+### O4. C's corner arcs
+The handoff asks for dotted lines arcing in from both top corners of the events band. On wide screens the path itself runs down the left gutter of that band, so only the right arc is drawn there (two dotted lines in one gutter read as a tangle). Narrow screens get both arcs.
+
+### O5. The About card
+B's white card sits on a sand band. Here the band is paper (sand is taken by the bands either side), so the white card has a sand mat around it to hold the edge without an outline.
+
+### O6. Video poster picture
+The poster is the `hero-river` scene in the warm wash. The handoff does not name a slot for the poster. Swap it with one prop in the page file.
+
+### O7. Stub targets
+`Find a Meeting` and `FIND A MEETING` go to the finder on the page. The three `All events` pills, `VIEW EVENTS`, `AREA SERVICE` and every nav and footer link except Meetings are `#` stubs until Phase 2.
+
+### O8. Small labels that are not body copy
+Skip link: `Find a Meeting` (the header button's own words). Footer nav landmark name: `BergenArea.org`. Badge alt text: `Live Web Studios: verified and secured`. Footer credit: `Built by Live Web Studios` as the handoff says (the LWS skill default is "Powered by").
+
+### O9. Dialogs
+Meeting details and the notice render at the end of `<body>` (a React portal) so no section can trap them under the sticky nav. Focus lands on the dialog itself, which reads its title first.

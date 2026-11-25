@@ -11,7 +11,8 @@ const wob = (x: number, seed: number) =>
 /** A band with a gently wobbling top edge, running to the bottom of the picture. */
 function band(w: number, h: number, yLeft: number, yRight: number, amp: number, seed: number): string {
   let d = `M0 ${h} L0 ${yLeft.toFixed(1)}`;
-  for (let x = 0; x <= w; x += w / 28) {
+  for (let i = 0; i <= 28; i++) {
+    const x = (w * i) / 28;
     const y = yLeft + ((yRight - yLeft) * x) / w + wob(x, seed) * amp;
     d += ` L${x.toFixed(1)} ${y.toFixed(1)}`;
   }
@@ -75,6 +76,6 @@ export const WASH: Record<Slot, WashShape[]> = {
   ],
   keytag: [
     { c: 'a', d: blobPath(450, 440, 380, 350, 4.2) },
-    { c: 'c', d: band(900, 900, 744, 750, 3, 6.1) },
+    { c: 'c', d: blobPath(450, 762, 420, 74, 6.1, 0.07) },
   ],
 };

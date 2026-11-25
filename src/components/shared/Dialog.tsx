@@ -2,6 +2,7 @@
 // is trapped, Escape, the backdrop and a visible Close button all close it, focus returns to
 // where it was, and the page behind does not scroll. Skins are plain class names.
 import { useEffect, useRef, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 
 interface Props {
   open: boolean;
@@ -25,7 +26,8 @@ export function Dialog({ open, onClose, labelledBy, className = '', backdropClas
     returnTo.current = document.activeElement as HTMLElement | null;
     document.documentElement.classList.add('dialog-open');
     const node = panel.current;
-    const first = node?.querySelector<HTMLElement>('[data-autofocus]') ?? node?.querySelector<HTMLElement>(FOCUSABLE) ?? node;
+    // Focus lands on the dialog itself, so a screen reader starts with its title.
+    const first = node?.querySelector<HTMLElement>('[data-autofocus]') ?? node;
     first?.focus({ preventScroll: true });
 
     const onKey = (e: KeyboardEvent) => {
@@ -53,8 +55,9 @@ export function Dialog({ open, onClose, labelledBy, className = '', backdropClas
     };
   }, [open]);
 
-  if (!open) return null;
-  return (
+  if (!open || typeof document === 'undefined') return null;
+  // Rendered at the end of <body>, so no section's stacking context can trap it under the sticky nav.
+  return createPortal(
     <div
       className={`dialog-backdrop ${backdropClassName}`.trim()}
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
@@ -62,7 +65,8 @@ export function Dialog({ open, onClose, labelledBy, className = '', backdropClas
       <div ref={panel} role="dialog" aria-modal="true" aria-labelledby={labelledBy} tabIndex={-1} className={`dialog ${className}`.trim()}>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

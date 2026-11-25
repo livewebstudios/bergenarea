@@ -30,32 +30,35 @@ export function PinShape() {
   );
 }
 
+const SLICE = { left: 'xMinYMid slice', center: 'xMidYMid slice', right: 'xMaxYMid slice' } as const;
+
 export function Scene({ slot, className = '', pin = true, eager = false, anchor = 'center' }: Props) {
   const s = SLOTS[slot];
   const file = (manifest as Record<string, { source: string; file: string }>)[slot].file;
   const [px, py, ps] = Array.isArray(pin) ? pin : s.pin;
   const box = `0 0 ${s.w} ${s.h}`;
+  // The three layers fill the same frame and crop the same way (cover), so they stay registered.
+  // No layer and no wrapper creates a stacking context: the ink multiplies against whatever
+  // the scene sits on (the wash, a card, a band).
   return (
     <span className={`scene scene--${s.shape} scene--${slot} scene--${anchor} ${className}`.trim()}>
-      <span className="scene__stage">
-        <svg className="scene__wash" viewBox={box} aria-hidden="true" focusable="false">
-          {WASH[slot].map((shape, i) =>
-            shape.circle ? (
-              <circle key={i} className={`wash-${shape.c}`} cx={shape.circle[0]} cy={shape.circle[1]} r={shape.circle[2]} />
-            ) : (
-              <path key={i} className={`wash-${shape.c}`} d={shape.d} />
-            ),
-          )}
-        </svg>
-        <img className="scene__ink" src={href(`ink/${file}`)} alt="" width={s.w} height={s.h} loading={eager ? 'eager' : 'lazy'} decoding="async" />
-        {pin !== false && (
-          <svg className="scene__pin" viewBox={box} aria-hidden="true" focusable="false">
-            <g data-pin={slot} transform={`translate(${px} ${py}) scale(${ps})`}>
-              <PinShape />
-            </g>
-          </svg>
+      <svg className="scene__wash" viewBox={box} preserveAspectRatio={SLICE[anchor]} aria-hidden="true" focusable="false">
+        {WASH[slot].map((shape, i) =>
+          shape.circle ? (
+            <circle key={i} className={`wash-${shape.c}`} cx={shape.circle[0]} cy={shape.circle[1]} r={shape.circle[2]} />
+          ) : (
+            <path key={i} className={`wash-${shape.c}`} d={shape.d} />
+          ),
         )}
-      </span>
+      </svg>
+      <img className="scene__ink" src={href(`ink/${file}`)} alt="" width={s.w} height={s.h} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+      {pin !== false && (
+        <svg className="scene__pin" viewBox={box} preserveAspectRatio={SLICE[anchor]} aria-hidden="true" focusable="false">
+          <g data-pin={slot} transform={`translate(${px} ${py}) scale(${ps})`}>
+            <PinShape />
+          </g>
+        </svg>
+      )}
     </span>
   );
 }

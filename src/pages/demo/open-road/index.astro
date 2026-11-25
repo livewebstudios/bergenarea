@@ -1,8 +1,222 @@
 ---
+/* Demo 1: Open Road. Warm paper, a pen-and-ink river valley, and a dotted path that
+   walks you down the page to a meeting. Leads with references B and C. */
+import '@fontsource/instrument-serif/latin-400.css';
+import '@fontsource/public-sans/latin-400.css';
+import '@fontsource/public-sans/latin-600.css';
+import '@fontsource/patrick-hand/latin-400.css';
+import '../../../styles/demo1.css';
 import Base from '../../../layouts/Base.astro';
 import DemoSwitcher from '../../../components/shared/DemoSwitcher.astro';
+import HelplineBar from '../../../components/shared/HelplineBar.astro';
+import VideoPoster from '../../../components/shared/VideoPoster.astro';
+import { Scene } from '../../../components/shared/Scene';
+import { Icon } from '../../../components/shared/icons/Icon';
+import { Dotted, Underline } from '../../../components/shared/Rough';
+import Finder1 from '../../../components/demo1/Finder1';
+import Notice1 from '../../../components/demo1/Notice1';
+import { deck, ui } from '../../../content/deck';
+import { href, STUB } from '../../../lib/href';
+import { loadMeetings } from '../../../lib/load';
+import { loadHome } from '../../../lib/home';
+
+const buildNow = new Date();
+const data = await loadMeetings();
+const home = loadHome(buildNow);
+const year = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric' }).format(buildNow));
+const FINDER = '#meetings';
+const navHref = (label: string) => (label === 'Meetings' ? FINDER : STUB);
+const areas = [
+  { key: 'area', label: ui.upcomingMeetings, tint: 'mint', slot: 'table', items: home.area },
+  { key: 'convention', label: ui.convention, tint: 'tan', slot: 'fireworks', items: home.convention },
+  { key: 'activities', label: ui.activities, tint: 'sky', slot: 'pavilion', items: home.activities },
+] as const;
 ---
-<Base title="Bergen Area of Narcotics Anonymous | Just for Today" description="This site is hosted by the Narcotics Anonymous Bergen County Area Committee in New Jersey." bodyClass="has-switcher">
-  <main class="wrap"><h1>BERGEN COUNTY AREA WEBSITE</h1></main>
+<Base title={deck.site.browserTitle} description="This site is hosted by the Narcotics Anonymous Bergen County Area Committee in New Jersey." bodyClass="d1 has-switcher">
+  <link slot="head" rel="preload" as="image" href={href('ink/hero-river.svg')} type="image/svg+xml" />
+  <a class="skip-link" href={FINDER}>{deck.site.headerButton}</a>
+  <HelplineBar class="d1-helpline" />
+
+  <header class="d1-nav" data-nav>
+    <div class="wrap d1-nav__in">
+      <a class="d1-nav__logo" href={href('demo/open-road/')}><img src={href('img/logo.png')} alt={deck.site.logoAlt} width="200" height="43" /></a>
+      <button type="button" class="d1-nav__menu" data-nav-toggle aria-expanded="false" aria-controls="d1-menu"><Icon name="menu" /><span>{ui.menu}</span></button>
+      <nav id="d1-menu" class="d1-nav__links" aria-label={ui.menu}>
+        <ul>
+          {deck.site.nav.map((item) => (
+            <li>
+              {item.children ? (
+                <>
+                  <button type="button" data-sub-toggle aria-expanded="false">{item.label}</button>
+                  <ul class="d1-nav__sub">
+                    {item.children.map((child) => <li><a href={STUB}>{child}</a></li>)}
+                  </ul>
+                </>
+              ) : (
+                <a href={navHref(item.label)}>{item.label}</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <a class="d1-btn d1-nav__cta" href={FINDER} data-deck="header-button">{deck.site.headerButton}</a>
+    </div>
+  </header>
+
+  <main id="main" class="d1-main" data-path-root>
+    <section class="d1-hero grain" data-path-stop>
+      <div class="wrap d1-hero__text">
+        <p class="d1-kicker" data-deck="kicker">{deck.hero.kicker}</p>
+        <h1 class="d1-display d1-hero__title" data-deck="h1">{deck.hero.h1}</h1>
+        <a class="d1-btn d1-btn--lg" href={FINDER}><span data-deck="hero-button">{deck.hero.button}</span><Icon name="arrow" /></a>
+      </div>
+      <div class="d1-hero__scene"><Scene slot="hero-river" anchor="left" eager /></div>
+      <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
+    </section>
+
+    <section id="meetings" class="d1-band d1-band--sand grain" data-path-stop>
+      <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
+      <div class="wrap d1-today">
+        <div class="d1-today__card">
+          <Finder1 client:load meetings={data.meetings} buildNow={buildNow.getTime()} />
+        </div>
+        <div class="d1-today__art"><Scene slot="chairs" pin={[965, 800, 0.9]} /></div>
+      </div>
+    </section>
+
+    <section class="d1-band grain" data-path-stop>
+      <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
+      <div class="wrap d1-meet">
+        <h2 class="d1-display d1-h2" data-deck="meetings-heading">{deck.meetings.heading}</h2>
+        <Underline className="d1-rule" seed={12} />
+        <p class="d1-display d1-meet__towns" data-deck="towns">{deck.meetings.townsSentence(data.towns)}</p>
+        <p class="d1-meet__second" data-deck="meetings-second">{deck.meetings.second}</p>
+        <a class="d1-btn d1-btn--lg" href={FINDER}><span data-deck="meetings-button">{deck.meetings.button}</span><Icon name="arrow" /></a>
+        <p class="d1-meet__app" data-deck="app">{deck.meetings.app}</p>
+        <ul class="d1-badges">
+          {deck.meetings.badges.map((b) => (
+            <li><a href={b.href} target="_blank" rel="noopener noreferrer"><img src={href(b.img)} alt={b.alt} width={b.width} height={b.height} loading="lazy" decoding="async" /></a></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="d1-band d1-events grain" data-path-stop>
+      <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
+      <Dotted className="d1-arc d1-arc--left" viewBox="0 0 300 180" seed={31} points={[[0, 8], [70, 40], [150, 60], [230, 150], [296, 176]]} preserve="xMinYMin meet" />
+      <Dotted className="d1-arc d1-arc--right" viewBox="0 0 300 180" seed={37} points={[[300, 4], [236, 30], [150, 70], [80, 140], [4, 172]]} preserve="xMaxYMin meet" />
+      <div class="wrap">
+        <div class="d1-events__intro">
+          <h2 class="d1-display d1-h2" data-deck="events-heading">{deck.events.heading}</h2>
+          <p class="d1-lede" data-deck="events-paragraph">{deck.events.paragraph.map((part) => (part.href ? <a href={part.href} target="_blank" rel="noopener noreferrer">{part.text}</a> : part.text))}</p>
+        </div>
+        <ul class="d1-cards">
+          {areas.map((area) => (
+            <li class={`d1-card d1-card--${area.tint}`}>
+              <h3 class="d1-display d1-card__label">{area.label}</h3>
+              <div class="d1-card__art"><Scene slot={area.slot} /></div>
+              <div class="d1-card__items" data-upcoming data-limit="2">
+                <ul>
+                  {area.items.map((ev, i) => (
+                    <li class="d1-event" data-expires={ev.expires} hidden={i > 1}>
+                      <p class="d1-event__title">{ev.title}{ev.sample && <> <span class="sample-tag">{ui.sample}</span></>}</p>
+                      <p class="d1-event__when">{ev.when}</p>
+                      {ev.location_name && <p class="d1-event__where">{ev.location_name}</p>}
+                      {ev.address && <p class="d1-event__where">{ev.address}</p>}
+                      {ev.note && <p class="d1-event__where">{ev.note}</p>}
+                      {ev.virtual_link && <p><a href={ev.virtual_link} target="_blank" rel="noopener noreferrer">{ui.joinZoom}</a></p>}
+                      {ev.link_url && ev.link_label && <p><a href={ev.link_url} target="_blank" rel="noopener noreferrer">{ev.link_label}</a></p>}
+                    </li>
+                  ))}
+                </ul>
+                <p class="d1-event__none" data-empty hidden={area.items.length > 0}>{ui.nothingPosted}</p>
+              </div>
+              <a class="d1-btn d1-btn--white" href={STUB}>{ui.allEvents}<Icon name="arrow" /></a>
+            </li>
+          ))}
+        </ul>
+        <p class="d1-events__more"><a class="d1-btn d1-btn--lg" href={STUB}><span data-deck="events-button">{deck.events.button}</span><Icon name="arrow" /></a></p>
+      </div>
+    </section>
+
+    <section class="d1-band d1-band--sand grain" data-path-stop>
+      <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
+      <div class="wrap d1-area">
+        <h2 class="d1-display d1-h2" data-deck="area-heading">{deck.areaService.heading}</h2>
+        <div class="d1-area__text">
+          {deck.areaService.paragraphs.map((p, i) => <p data-deck={`area-p${i + 1}`}>{p}</p>)}
+          <a class="d1-btn" href={STUB}><span data-deck="area-button">{deck.areaService.button}</span><Icon name="arrow" /></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="d1-band grain" data-path-stop>
+      <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
+      <div class="wrap">
+        <div class="d1-about">
+          <div class="d1-about__art"><Scene slot="keytag" /></div>
+          <div class="d1-about__text">
+            <p data-deck="about-p1">{deck.about.first.map((part) => (part.bold ? <strong>{part.text}</strong> : part.text))}</p>
+            {deck.about.rest.map((p, i) => <p data-deck={`about-p${i + 2}`}>{p}</p>)}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="d1-band d1-band--video grain" data-path-stop>
+      <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
+      <div class="wrap d1-video-wrap">
+        <VideoPoster slot="hero-river" class="d1-video" />
+      </div>
+    </section>
+
+    <section class="d1-band grain" data-path-stop>
+      <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
+      <div class="wrap d1-links">
+        <h2 class="d1-display d1-h2" data-deck="links-heading">{deck.otherLinks.heading}</h2>
+        <ul>
+          {deck.otherLinks.links.map((link, i) => (
+            <li><a class="d1-btn d1-btn--wide" href={link.href} target="_blank" rel="noopener noreferrer"><span data-deck={`link-${i + 1}`}>{link.label}</span><Icon name="arrow" /></a></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <div class="d1-closing grain" data-path-stop>
+      <Scene slot="road-horizon" />
+      <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
+    </div>
+  </main>
+
+  <footer class="d1-footer grain">
+    <div class="wrap d1-footer__in">
+      <div class="d1-footer__brand">
+        <img src={href('img/logo.png')} alt={deck.site.logoAlt} width="200" height="43" loading="lazy" decoding="async" />
+        <p class="d1-footer__help">{deck.site.helpline.before}<a href={deck.site.helpline.first.href}>{deck.site.helpline.first.label}</a><span class="nowrap">{deck.site.helpline.between}<a href={deck.site.helpline.second.href}>{deck.site.helpline.second.label}</a>{deck.site.helpline.after}</span></p>
+        <p><a href={`mailto:${deck.site.email}`}>{deck.site.email}</a></p>
+      </div>
+      <nav class="d1-footer__nav" aria-label="BergenArea.org">
+        <ul>
+          {deck.site.footerNav.map((label) => <li><a href={navHref(label)}>{label}</a></li>)}
+        </ul>
+      </nav>
+      <div class="d1-footer__meta">
+        <img src={href('img/verifiedsecured.png')} alt="Live Web Studios: verified and secured" width="150" height="37" loading="lazy" decoding="async" />
+        <p>Built by <a href="https://livewebstudios.com" target="_blank" rel="noopener noreferrer">Live Web Studios</a></p>
+        <p data-deck="copyright">{deck.site.copyright(year)}</p>
+      </div>
+    </div>
+  </footer>
+
+  <Notice1 client:idle notice={home.notice} />
   <DemoSwitcher current={1} />
 </Base>
+
+<script>
+  import { initNav } from '../../../lib/nav-client';
+  import { watchUpcoming } from '../../../lib/upcoming-client';
+  import { initPath } from '../../../components/demo1/path';
+  initNav();
+  watchUpcoming();
+  initPath();
+</script>

@@ -6,4 +6,4 @@ interface Props { class?: string }
 const { class: cls = '' } = Astro.props;
 const h = deck.site.helpline;
 ---
-<p class={`helpline ${cls}`} data-deck="helpline"><Icon name="phone" /><span class="helpline__text">{h.before}<a href={h.first.href}>{h.first.label}</a>{h.between}<a href={h.second.href}>{h.second.label}</a>{h.after}</span></p>
+<p class={`helpline ${cls}`} data-deck="helpline"><Icon name="phone" /><span class="helpline__text">{h.before}<a href={h.first.href}>{h.first.label}</a><span class="nowrap">{h.between}<a href={h.second.href}>{h.second.label}</a>{h.after}</span></span></p>
