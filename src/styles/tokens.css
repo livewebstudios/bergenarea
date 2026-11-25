@@ -1,0 +1,48 @@
+/* Bergen Area: proposed color theme. Every value sampled from the four inspiration
+   screenshots, then adjusted only where the sample failed contrast.
+   scripts/contrast.mjs reads this file. Do not rename a token without updating it. */
+:root {
+  /* grounds */
+  --paper:  #FFFAF5;
+  --sand:   #FBF5E9;
+  --white:  #FFFFFF;
+  /* pastel fills: backgrounds only, never text */
+  --tan:    #F4ECDF;
+  --mint:   #E7F2EC;
+  --sage:   #C9D6C5;
+  --sky:    #C8DFE7;
+  --mist:   #E8F2F4;
+  --butter: #FDEECE;
+  --peach:  #F4D8C0; /* inside landscape washes ONLY */
+  --dusk:   #5E8896; /* illustration tint ONLY, never under text */
+  --pill:   #6FD0BD;
+  /* ink and deep tones */
+  --ink:    #1C1A17;
+  --muted:  #5B5750;
+  --teal:   #155D5A;
+  --lake:   #2F5F6B;
+  --forest: #3E5A47;
+  --rust:   #A8492A;
+
+  /* shape */
+  --radius-card: 14px;
+  --radius-pill: 999px;
+  --outline: 1.5px solid var(--ink);
+  --shadow-hard: 3px 3px 0 var(--ink);
+
+  /* rhythm */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 6.5rem;
+  --wrap: 72rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+
+  --tap: 2.75rem; /* 44px minimum tap target */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}

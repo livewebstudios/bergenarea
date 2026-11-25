@@ -1,0 +1,19 @@
+/* Chooser page: review scaffolding. Shared tokens only, no demo styling. */
+.chooser { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; min-height: 100vh; }
+.chooser__head { padding-block: var(--space-7) var(--space-6); }
+.chooser__line { margin-top: var(--space-5); font-size: clamp(1.375rem, 1rem + 1.6vw, 2rem); font-weight: 600; line-height: 1.2; max-width: 28ch; }
+.chooser__grid { display: grid; gap: var(--space-5); padding-bottom: var(--space-8); }
+@media (min-width: 60rem) { .chooser__grid { grid-template-columns: repeat(3, 1fr); } }
+.chooser-card { display: flex; flex-direction: column; background: var(--white); border: var(--outline); border-radius: var(--radius-card); overflow: hidden; }
+.chooser-card__shot { aspect-ratio: 1200 / 750; background: var(--tan); border-bottom: var(--outline); }
+.chooser-card__shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.chooser-card__body { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-5); flex: 1; }
+.chooser-card__num { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.1em; color: var(--muted); }
+.chooser-card__name { font-size: 1.5rem; font-weight: 700; line-height: 1.15; }
+.chooser-card__line { color: var(--muted); flex: 1; }
+.chooser-card__btn {
+  display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap); padding: 0 var(--space-5);
+  background: var(--ink); color: var(--paper); border-radius: 8px; text-decoration: none; font-weight: 600; letter-spacing: 0.06em; align-self: flex-start;
+  transition: background-color 150ms;
+}
+.chooser-card__btn:hover { background: var(--teal); }

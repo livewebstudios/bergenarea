@@ -1,0 +1,10 @@
+---
+/* The one place the logo lives. A rebrand is coming: swap public/img/logo.png and the
+   numbers below. Light grounds only (paper, sand, white). Never wider than 312px. */
+import { href } from '../../lib/href';
+interface Props { width?: number; class?: string; eager?: boolean }
+const { width = 200, class: cls = '', eager = false } = Astro.props;
+const w = Math.min(width, 312);
+const h = Math.round((w * 67) / 312);
+---
+<img class={`logo ${cls}`} src={href('img/logo.png')} alt="Bergen Area of Narcotics Anonymous" width={w} height={h} loading={eager ? 'eager' : 'lazy'} decoding="async" />

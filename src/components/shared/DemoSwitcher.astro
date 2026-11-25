@@ -1,0 +1,24 @@
+---
+/* DEMO SCAFFOLDING: remove at promote */
+import { routes } from '../../lib/href';
+interface Props { current: 1 | 2 | 3 }
+const { current } = Astro.props;
+const demos = [
+  { n: 1, url: routes.demo1(), name: 'Open Road' },
+  { n: 2, url: routes.demo2(), name: "Tonight's Board" },
+  { n: 3, url: routes.demo3(), name: 'Twenty Towns' },
+];
+---
+<nav class="demo-switcher" aria-label="Design switcher">
+  <a href={routes.chooser()}>ALL 3</a>
+  {demos.map((d) => (
+    <a href={d.url} aria-current={d.n === current ? 'page' : undefined} aria-label={`Design ${d.n}: ${d.name}`}>{d.n}</a>
+  ))}
+  <button type="button" data-notice-replay>NOTICE</button>
+</nav>
+<script>
+  // DEMO SCAFFOLDING: remove at promote
+  document.querySelectorAll<HTMLButtonElement>('[data-notice-replay]').forEach((btn) => {
+    btn.addEventListener('click', () => window.dispatchEvent(new CustomEvent('ba:notice-replay')));
+  });
+</script>
