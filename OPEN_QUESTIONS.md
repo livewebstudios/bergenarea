@@ -129,3 +129,32 @@ Skip link: `Find a Meeting` (the header button's own words). Footer nav landmark
 
 ### O9. Dialogs
 Meeting details and the notice render at the end of `<body>` (a React portal) so no section can trap them under the sticky nav. Focus lands on the dialog itself, which reads its title first.
+
+## Demo 2: Tonight's Board (task 4)
+
+### T1. What "the answer" is on the Next Meeting tile
+A meeting that is on right now wins, labelled `Happening now` (if several are on, the one that started most recently). When nothing is on, the tile shows the next meeting and counts down: `Starts in {n} min` inside the last hour, `Starts at {time}` before that. When the next meeting is not today the tile adds `Tomorrow` or the day name beside the time. The tile turns over once (400ms, X axis) whenever the answer changes to a different meeting. It never flips in the first 2.5 seconds after load, so nothing animates before the list is readable.
+
+### T2. Day tabs start from today
+`Today`, `Tomorrow`, then the five days that follow. This is on purpose different from demo 1 (fixed Sunday to Saturday) so the Area can compare both.
+
+### T3. JavaScript off
+The tile makes a live claim, so with JavaScript off it is hidden (a `<noscript>` rule) instead of showing a stale "next meeting". In all three demos the server HTML names the build day ("Tuesday") instead of saying `Today`, and carries no `Next meeting` or `Happening now` flags. Those appear only once the browser clock is running.
+
+### T4. Notice popup does not slide
+The handoff says the demo 2 notice slides up from the bottom edge. Section 8 says the tile flip is the only motion on this page and allows dialogs a 200ms fade. The motion budget won: the notice sits at the bottom edge (a bottom sheet on phones) and fades in over 200ms. One line of CSS adds a slide if you want it.
+
+### T5. Section order kept, with one heading moved up
+The events band reads: `ANNOUNCEMENTS & EVENTS` heading, the three tiles, then the paragraph and `VIEW EVENTS`. The handoff puts the paragraph after the tiles and does not place the heading. It has to come before the tiles so the heading outline does not skip a level.
+
+### T6. `FIND A MEETING` in the slim header band
+Demo 2 has no hero button in the handoff, but "same words in all three" matters for the deck check. The hero button's words are a quiet text link at the right of the header band on tablets and desktops. On phones it is hidden because the board is already on screen.
+
+### T7. Ink button shadow
+Primary buttons are ink with paper text, as specified. The shared hard offset shadow is also ink, so on a primary button it reads as a slightly heavier bottom-right edge. Secondary buttons (white) show it fully.
+
+### T8. Sticky header on phones
+Helpline bar and nav stick together on phones (about 108px). On tablets and desktops only the nav sticks.
+
+### T9. Pictures in this demo
+Next tile: `chairs` with the pin. Event tiles: `table`, `fireworks`, `pavilion` as round spots. About: `keytag` in an oval. Video poster: `pavilion` in a single mint wash (the handoff names no slot). Closing: a short `road-horizon` strip.

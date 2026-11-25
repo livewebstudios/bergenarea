@@ -1,8 +1,218 @@
 ---
+/* Demo 2: Tonight's Board. Open the site and the next meeting is already on screen.
+   Pastel tiles, ink outlines, zero hunting. Leads with references C and A. */
+import '@fontsource/bricolage-grotesque/latin-600.css';
+import '@fontsource/bricolage-grotesque/latin-700.css';
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-600.css';
+import '@fontsource/ibm-plex-mono/latin-500.css';
+import '../../../styles/demo2.css';
 import Base from '../../../layouts/Base.astro';
 import DemoSwitcher from '../../../components/shared/DemoSwitcher.astro';
+import HelplineBar from '../../../components/shared/HelplineBar.astro';
+import VideoPoster from '../../../components/shared/VideoPoster.astro';
+import { Scene } from '../../../components/shared/Scene';
+import { Blob } from '../../../components/shared/Blob';
+import { Icon } from '../../../components/shared/icons/Icon';
+import Board2 from '../../../components/demo2/Board2';
+import Notice2 from '../../../components/demo2/Notice2';
+import { deck, ui } from '../../../content/deck';
+import { href, STUB } from '../../../lib/href';
+import { loadMeetings } from '../../../lib/load';
+import { loadHome } from '../../../lib/home';
+
+const buildNow = new Date();
+const data = await loadMeetings();
+const home = loadHome(buildNow);
+const year = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric' }).format(buildNow));
+const FINDER = '#meetings';
+const navHref = (label: string) => (label === 'Meetings' ? FINDER : STUB);
+const areas = [
+  { label: ui.upcomingMeetings, tint: 'sky', slot: 'table', items: home.area },
+  { label: ui.convention, tint: 'butter', slot: 'fireworks', items: home.convention },
+  { label: ui.activities, tint: 'tan', slot: 'pavilion', items: home.activities },
+] as const;
+const h = deck.site.helpline;
 ---
-<Base title="Bergen Area of Narcotics Anonymous | Just for Today" description="This site is hosted by the Narcotics Anonymous Bergen County Area Committee in New Jersey." bodyClass="has-switcher">
-  <main class="wrap"><h1>BERGEN COUNTY AREA WEBSITE</h1></main>
+<Base title={deck.site.browserTitle} description="This site is hosted by the Narcotics Anonymous Bergen County Area Committee in New Jersey." bodyClass="d2 has-switcher">
+  <link slot="head" rel="preload" as="image" href={href('ink/chairs.svg')} type="image/svg+xml" />
+  <noscript slot="head"><style>.d2-next { display: none; }</style></noscript>
+  <a class="skip-link" href={FINDER}>{deck.site.headerButton}</a>
+
+  <div class="d2-top">
+    <HelplineBar class="d2-helpline" />
+    <header class="d2-nav" data-nav>
+      <div class="wrap d2-nav__in">
+        <a class="d2-nav__logo" href={href('demo/tonights-board/')}><img src={href('img/logo.png')} alt={deck.site.logoAlt} width="176" height="38" /></a>
+        <button type="button" class="d2-nav__menu" data-nav-toggle aria-expanded="false" aria-controls="d2-menu"><Icon name="menu" /><span>{ui.menu}</span></button>
+        <nav id="d2-menu" class="d2-nav__links" aria-label={ui.menu}>
+          <ul>
+            {deck.site.nav.map((item) => (
+              <li>
+                {item.children ? (
+                  <>
+                    <button type="button" data-sub-toggle aria-expanded="false">{item.label}</button>
+                    <ul class="d2-nav__sub">
+                      {item.children.map((child) => <li><a href={STUB}>{child}</a></li>)}
+                    </ul>
+                  </>
+                ) : (
+                  <a href={navHref(item.label)}>{item.label}</a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <a class="d2-btn d2-nav__cta" href={FINDER} data-deck="header-button">{deck.site.headerButton}</a>
+      </div>
+    </header>
+  </div>
+
+  <main id="main">
+    <div class="wrap d2-head">
+      <p class="d2-kicker" data-deck="kicker">{deck.hero.kicker}</p>
+      <h1 class="d2-display d2-head__title" data-deck="h1">{deck.hero.h1}</h1>
+      <a class="d2-head__jump" href={FINDER}><span data-deck="hero-button">{deck.hero.button}</span><Icon name="arrow" /></a>
+    </div>
+
+    <section id="meetings" class="d2-board">
+      <Blob shape={2} className="d2-blob d2-blob--sage" />
+      <div class="wrap d2-board__in">
+        <Board2 client:load meetings={data.meetings} buildNow={buildNow.getTime()} />
+      </div>
+    </section>
+
+    <section class="d2-section">
+      <div class="wrap">
+        <h2 class="d2-display d2-h2" data-deck="events-heading">{deck.events.heading}</h2>
+        <ul class="d2-tiles">
+          {areas.map((area) => (
+            <li class={`d2-tile d2-event-tile d2-event-tile--${area.tint}`}>
+              <div class="d2-event-tile__top">
+                <h3 class="d2-display d2-event-tile__label">{area.label}</h3>
+                <div class="d2-event-tile__art"><Scene slot={area.slot} /></div>
+              </div>
+              <div class="d2-event-tile__items" data-upcoming data-limit="2">
+                <ul>
+                  {area.items.map((ev, i) => (
+                    <li class="d2-event" data-expires={ev.expires} hidden={i > 1}>
+                      <p class="d2-event__title">{ev.title}{ev.sample && <> <span class="sample-tag">{ui.sample}</span></>}</p>
+                      <p class="d2-mono d2-event__when">{ev.when}</p>
+                      {ev.location_name && <p class="d2-event__where">{ev.location_name}</p>}
+                      {ev.address && <p class="d2-event__where">{ev.address}</p>}
+                      {ev.note && <p class="d2-event__where">{ev.note}</p>}
+                      {ev.virtual_link && <p><a href={ev.virtual_link} target="_blank" rel="noopener noreferrer">{ui.joinZoom}</a></p>}
+                      {ev.link_url && ev.link_label && <p><a href={ev.link_url} target="_blank" rel="noopener noreferrer">{ev.link_label}</a></p>}
+                    </li>
+                  ))}
+                </ul>
+                <p class="d2-event__none" data-empty hidden={area.items.length > 0}>{ui.nothingPosted}</p>
+              </div>
+              <a class="d2-btn d2-btn--alt" href={STUB}>{ui.allEvents}<Icon name="arrow" /></a>
+            </li>
+          ))}
+        </ul>
+        <div class="d2-events__after">
+          <p data-deck="events-paragraph">{deck.events.paragraph.map((part) => (part.href ? <a href={part.href} target="_blank" rel="noopener noreferrer">{part.text}</a> : part.text))}</p>
+          <a class="d2-btn" href={STUB}><span data-deck="events-button">{deck.events.button}</span><Icon name="arrow" /></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="d2-section d2-section--blob">
+      <Blob shape={4} className="d2-blob d2-blob--mint" />
+      <div class="wrap">
+        <div class="d2-tile d2-meet">
+          <div class="d2-meet__main">
+            <h2 class="d2-display d2-h2" data-deck="meetings-heading">{deck.meetings.heading}</h2>
+            <p class="d2-display d2-meet__towns" data-deck="towns">{deck.meetings.townsSentence(data.towns)}</p>
+            <p data-deck="meetings-second">{deck.meetings.second}</p>
+            <a class="d2-btn" href={FINDER}><span data-deck="meetings-button">{deck.meetings.button}</span><Icon name="arrow" /></a>
+          </div>
+          <div class="d2-meet__app">
+            <p data-deck="app">{deck.meetings.app}</p>
+            <ul class="d2-badges">
+              {deck.meetings.badges.map((b) => (
+                <li><a href={b.href} target="_blank" rel="noopener noreferrer"><img src={href(b.img)} alt={b.alt} width={b.width} height={b.height} loading="lazy" decoding="async" /></a></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="d2-section">
+      <div class="wrap">
+        <div class="d2-tile d2-area">
+          <div class="d2-area__head">
+            <span class="d2-area__icon"><Icon name="clipboard" size={48} /></span>
+            <h2 class="d2-display d2-h2" data-deck="area-heading">{deck.areaService.heading}</h2>
+          </div>
+          <div class="d2-area__text">
+            {deck.areaService.paragraphs.map((p, i) => <p data-deck={`area-p${i + 1}`}>{p}</p>)}
+            <a class="d2-btn" href={STUB}><span data-deck="area-button">{deck.areaService.button}</span><Icon name="arrow" /></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="d2-section">
+      <div class="wrap d2-about">
+        <div class="d2-about__art"><Scene slot="keytag" /></div>
+        <div class="d2-about__text">
+          <p data-deck="about-p1">{deck.about.first.map((part) => (part.bold ? <strong>{part.text}</strong> : part.text))}</p>
+          {deck.about.rest.map((p, i) => <p data-deck={`about-p${i + 2}`}>{p}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="d2-section">
+      <div class="wrap d2-video-wrap">
+        <VideoPoster slot="pavilion" class="d2-tile d2-video" pin={[352, 744, 0.75]} />
+      </div>
+    </section>
+
+    <section class="d2-section">
+      <div class="wrap d2-links">
+        <h2 class="d2-display d2-h2" data-deck="links-heading">{deck.otherLinks.heading}</h2>
+        <ul>
+          {deck.otherLinks.links.map((link, i) => (
+            <li><a class="d2-chip" href={link.href} target="_blank" rel="noopener noreferrer"><span data-deck={`link-${i + 1}`}>{link.label}</span><Icon name="arrow" /></a></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <div class="d2-closing"><Scene slot="road-horizon" /></div>
+  </main>
+
+  <footer class="d2-footer">
+    <div class="wrap d2-footer__in">
+      <div class="d2-footer__brand">
+        <img src={href('img/logo.png')} alt={deck.site.logoAlt} width="176" height="38" loading="lazy" decoding="async" />
+        <p>{h.before}<a href={h.first.href}>{h.first.label}</a><span class="nowrap">{h.between}<a href={h.second.href}>{h.second.label}</a>{h.after}</span></p>
+        <p><a href={`mailto:${deck.site.email}`}>{deck.site.email}</a></p>
+      </div>
+      <nav class="d2-footer__nav" aria-label="BergenArea.org">
+        <ul>
+          {deck.site.footerNav.map((label) => <li><a href={navHref(label)}>{label}</a></li>)}
+        </ul>
+      </nav>
+      <div class="d2-footer__meta">
+        <img src={href('img/verifiedsecured.png')} alt="Live Web Studios: verified and secured" width="150" height="37" loading="lazy" decoding="async" />
+        <p>Built by <a href="https://livewebstudios.com" target="_blank" rel="noopener noreferrer">Live Web Studios</a></p>
+        <p data-deck="copyright">{deck.site.copyright(year)}</p>
+      </div>
+    </div>
+  </footer>
+
+  <Notice2 client:idle notice={home.notice} />
   <DemoSwitcher current={2} />
 </Base>
+
+<script>
+  import { initNav } from '../../../lib/nav-client';
+  import { watchUpcoming } from '../../../lib/upcoming-client';
+  initNav();
+  watchUpcoming();
+</script>

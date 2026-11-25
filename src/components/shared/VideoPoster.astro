@@ -6,12 +6,12 @@ import { deck, ui } from '../../content/deck';
 import { Icon } from './icons/Icon';
 import { Scene } from './Scene';
 import type { Slot } from '../../lib/ink/slots';
-interface Props { slot?: Slot; class?: string }
-const { slot = 'road-horizon', class: cls = '' } = Astro.props;
+interface Props { slot?: Slot; class?: string; pin?: boolean | readonly [number, number, number] }
+const { slot = 'road-horizon', class: cls = '', pin = true } = Astro.props;
 ---
 <div class={`video ${cls}`} data-video={deck.video.id} data-video-title={deck.video.title}>
   <button type="button" class="video__poster" aria-label={`${ui.playVideo}: ${deck.video.title}`}>
-    <Scene slot={slot} />
+    <Scene slot={slot} pin={pin} />
     <span class="video__pill"><Icon name="play" /><span>{ui.playVideo}</span></span>
   </button>
 </div>

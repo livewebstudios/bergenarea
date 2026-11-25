@@ -25,10 +25,14 @@ export function useFinder(initial: Meeting[], buildNow: number, opts: FinderOpti
   const [venue, setVenue] = useState<VenueFilter>('all');
   const [town, setTown] = useState('');
   const [detail, setDetail] = useState<Meeting | null>(null);
+  // false in the server HTML and on the first client render. With JavaScript off the page never claims
+  // "Today" or "Next meeting": it shows the build day by name and no live flags.
+  const [live, setLive] = useState(false);
 
   // the clock
   useEffect(() => {
     setNow(new Date());
+    setLive(true);
     const tick = opts.tickMs ?? 60000;
     let interval: number | undefined;
     const align = window.setTimeout(() => {
@@ -76,15 +80,15 @@ export function useFinder(initial: Meeting[], buildNow: number, opts: FinderOpti
   const week = useMemo(() => meetings.filter(matches), [meetings, matches]);
 
   const status = useCallback(
-    (m: Meeting): Status => (nowIds.has(m.id) ? 'now' : nextIds.has(m.id) ? 'next' : undefined),
-    [nowIds, nextIds],
+    (m: Meeting): Status => (!live ? undefined : nowIds.has(m.id) ? 'now' : nextIds.has(m.id) ? 'next' : undefined),
+    [live, nowIds, nextIds],
   );
 
   const townList = useMemo(() => townsOf(meetings), [meetings]);
   const counts = useMemo(() => countsOf(meetings), [meetings]);
 
   return {
-    meetings, now, todayIdx, day, setDay: setPickedDay, venue, setVenue, town, setTown,
+    meetings, now, live, todayIdx, day, setDay: setPickedDay, venue, setVenue, town, setTown,
     list, week, status, nowList, nextList, detail, setDetail, townList, counts,
     /** toggles a venue filter: pressing the lit one clears it */
     toggleVenue: (v: Exclude<VenueFilter, 'all'>) => setVenue((cur) => (cur === v ? 'all' : v)),

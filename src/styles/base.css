@@ -86,8 +86,8 @@ strong { font-weight: 600; }
   display: grid; animation: dialog-fade 200ms ease-out both;
 }
 .dialog-open { overflow: hidden; }
-.dialog:focus { outline: none; }
-.dialog:focus-visible { outline: 3px solid var(--ink); outline-offset: -6px; }
+/* Focus lands on the dialog container (not a control) so its title is read first. No ring on the container. */
+.dialog:focus, .dialog:focus-visible { outline: none; }
 @keyframes dialog-fade { from { opacity: 0; } to { opacity: 1; } }
 
 .sample-tag {

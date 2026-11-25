@@ -79,8 +79,9 @@ export function hardwood(ink: Ink, rnd: Rnd, x: number, base: number, h: number)
     const sx = x + Math.cos(a) * rx * r;
     const sy = cy + Math.sin(a) * ry * r;
     const sz = s0 * rnd(0.7, 1.2);
-    // one small cupped stroke per leaf cluster (never a double arch, which can read as a bird)
-    ink.path(`M${sx - sz * 0.6} ${sy - sz * 0.3} q${sz * 0.5} ${sz * 0.85} ${sz * 1.2} ${sz * 0.1}`, { w: Math.max(1, lw * 0.7), rough: 0.6 });
+    // one small scribbled loop per leaf cluster. Loops cannot be mistaken for birds,
+    // which arches and cupped strokes can.
+    ink.ellipse(sx, sy, sz * rnd(1.1, 1.7), sz * rnd(0.8, 1.2), { w: Math.max(1, lw * 0.65), rough: 1.5 });
   }
   // shade, lower right
   const shade = Math.round(Math.min(h / 12, 26));

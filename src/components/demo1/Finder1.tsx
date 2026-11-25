@@ -19,13 +19,13 @@ export default function Finder1({ meetings, buildNow }: Props) {
     <>
       <div className="d1-finder">
         <div className="d1-finder__head">
-          <h2 className="d1-display d1-finder__title">{dayLabel(f.day, f.todayIdx)}</h2>
+          <h2 className="d1-display d1-finder__title">{dayLabel(f.day, f.todayIdx, f.live)}</h2>
           <div className="d1-days" role="group" aria-label={dayName(f.day)}>
             {[0, 1, 2, 3, 4, 5, 6].map((i) => (
               <button key={i} type="button" className="d1-day" aria-pressed={f.day === i} onClick={() => f.setDay(i)}>
                 <span aria-hidden="true">{dayShort(i)}</span>
-                <span className="sr-only">{i === f.todayIdx ? `${ui.today}, ${dayName(i)}` : dayName(i)}</span>
-                {i === f.todayIdx && <Circled className="d1-day__circle" />}
+                <span className="sr-only">{f.live && i === f.todayIdx ? `${ui.today}, ${dayName(i)}` : dayName(i)}</span>
+                {f.live && i === f.todayIdx && <Circled className="d1-day__circle" />}
               </button>
             ))}
           </div>
