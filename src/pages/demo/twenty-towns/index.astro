@@ -76,9 +76,6 @@ const hills = [
   <main id="main">
     <section id="meetings" class="d3-hero">
       <svg class="d3-hero__sun" viewBox="0 0 200 200" aria-hidden="true" focusable="false"><circle cx="100" cy="100" r="100" /></svg>
-      <svg class="d3-hero__hills" viewBox="0 0 1600 600" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-        {hills.map((hill) => <path class={hill.c} d={hill.d} />)}
-      </svg>
       <div class="wrap d3-hero__in">
         <div class="d3-hero__text">
           <p class="d3-kicker" data-deck="kicker">{deck.hero.kicker}</p>
@@ -89,6 +86,11 @@ const hills = [
           <Map3 client:load meetings={data.meetings} buildNow={buildNow.getTime()} ring={ring} />
         </div>
       </div>
+      {/* Last in the section on purpose: the hills hang from the bottom edge, and placing them after the
+          content means they are laid out once, at their final spot, instead of sliding as the page streams in. */}
+      <svg class="d3-hero__hills" viewBox="0 0 1600 600" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        {hills.map((hill) => <path class={hill.c} d={hill.d} />)}
+      </svg>
     </section>
 
     <section class="d3-band d3-band--white">

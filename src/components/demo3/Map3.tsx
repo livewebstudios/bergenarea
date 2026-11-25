@@ -1,7 +1,7 @@
 // Demo 3: a hand-drawn map of the county. Tap your town and see your meetings.
 // The map is drawn from the data (lib/map.ts). The towns are real HTML buttons laid over
 // the SVG, in A to Z tab order. Presentation only.
-import { useEffect, useId, useMemo, useRef } from 'react';
+import React, { useEffect, useId, useMemo, useRef } from 'react';
 import { isVirtual, type Meeting } from '../../lib/bmlt';
 import { announce, dayLabel, dayName, dayShort, placeLine, telHref, useFinder, venueLabel } from '../../lib/finder';
 import { buildMap, type MapModel } from '../../lib/map';
@@ -71,6 +71,24 @@ export default function Map3({ meetings, buildNow, ring }: Props) {
   const selected = model.towns.find((t) => t.name === f.town) ?? null;
   const pick = (name: string) => f.setTown(f.town === name ? '' : name);
 
+  // On a small map the dots sit closer together than any fair tap target, so the town buttons
+  // are hidden there and the chip row is the control. A tap on the map still works: it picks
+  // the nearest dot, which keeps the dots and the chips in step both ways.
+  const tapMap = (e: React.MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).closest('button')) return;
+    const box = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - box.left) / box.width) * model.w;
+    const y = ((e.clientY - box.top) / box.height) * model.h;
+    const reach = Math.max(34, (30 * model.w) / box.width);
+    let best: (typeof model.towns)[number] | null = null;
+    let bestDist = reach;
+    for (const t of model.towns) {
+      const dist = Math.hypot(t.x - x, t.y - y);
+      if (dist < bestDist) { bestDist = dist; best = t; }
+    }
+    if (best) pick(best.name);
+  };
+
   // Keep the chip row in step with the map: slide the chosen chip into view (sideways only, never the page).
   const chips = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -93,7 +111,7 @@ export default function Map3({ meetings, buildNow, ring }: Props) {
     <div className="d3-finder">
       <div className="d3-mapcol">
         <div className="d3-sheet">
-          <div className="d3-map">
+          <div className="d3-map" onClick={tapMap}>
             <style>{css}</style>
             <svg className="d3-map__ink" viewBox={`0 0 ${model.w} ${model.h}`} aria-hidden="true" focusable="false">
               <defs>
@@ -137,6 +155,11 @@ export default function Map3({ meetings, buildNow, ring }: Props) {
                 <span className="d3-town__label">{t.name}</span>
               </button>
             ))}
+            {selected && (
+              <span className={`d3-picked d3-town--${selected.slug}`} aria-hidden="true">
+                <span className="d3-town__label">{selected.name}</span>
+              </span>
+            )}
             <span className="d3-map__river" aria-hidden="true">HUDSON RIVER</span>
             <span className="d3-map__n" aria-hidden="true">N</span>
           </div>

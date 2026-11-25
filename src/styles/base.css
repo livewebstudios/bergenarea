@@ -1,6 +1,8 @@
 /* Shared reset and behaviors. No demo look lives here. */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 6rem; }
+/* demo 2 keeps the helpline and the nav stuck together on phones, so anchors need more room */
+html:has(.d2) { scroll-padding-top: 8rem; }
 body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.55; overflow-x: clip; }
 h1, h2, h3, h4, p, ul, ol, figure, dl, dd { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
@@ -69,7 +71,9 @@ strong { font-weight: 600; }
 .video__frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
 .helpline { display: flex; align-items: center; justify-content: center; gap: var(--space-2); margin: 0; }
-.helpline a { color: inherit; white-space: nowrap; display: inline-block; padding-block: 0.6rem; margin-block: -0.6rem; }
+.helpline a { color: inherit; white-space: nowrap; display: inline-block; padding-block: 0.85rem; margin-block: -0.85rem; }
+/* links that stand alone on a line get a 44px target */
+.tap-link { display: inline-flex; align-items: center; min-height: var(--tap); }
 
 /* Icons: single ink line, slightly uneven on purpose. */
 .icon { display: inline-block; flex: none; vertical-align: middle; }
@@ -82,7 +86,7 @@ strong { font-weight: 600; }
 
 /* Dialog (shared behavior, skins live in each demo) */
 .dialog-backdrop {
-  position: fixed; inset: 0; z-index: 150; background: rgb(28 26 23 / 0.45);
+  position: fixed; inset: 0; z-index: 150; background: color-mix(in srgb, var(--ink) 45%, transparent);
   display: grid; animation: dialog-fade 200ms ease-out both;
 }
 .dialog-open { overflow: hidden; }
@@ -91,7 +95,7 @@ strong { font-weight: 600; }
 @keyframes dialog-fade { from { opacity: 0; } to { opacity: 1; } }
 
 .sample-tag {
-  display: inline-block; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em;
+  display: inline-block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em;
   padding: 0.1rem 0.45rem; border: 1.5px solid var(--ink); border-radius: 4px; color: var(--ink);
   background: var(--white); vertical-align: middle; line-height: 1.4;
 }
@@ -102,14 +106,14 @@ strong { font-weight: 600; }
   z-index: 120; display: flex; align-items: center; gap: 0.125rem; padding: 0.25rem;
   background: var(--ink); color: var(--paper); border-radius: var(--radius-pill);
   font: 600 0.8125rem/1 system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: 0.06em;
-  box-shadow: 0 6px 20px rgb(28 26 23 / 0.25);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--ink) 25%, transparent);
 }
 .demo-switcher a, .demo-switcher button {
   display: inline-grid; place-items: center; min-width: var(--tap); min-height: var(--tap); padding: 0 0.75rem;
   color: var(--paper); background: none; border: 0; border-radius: var(--radius-pill); text-decoration: none;
   font: inherit; letter-spacing: inherit; white-space: nowrap;
 }
-.demo-switcher a:hover, .demo-switcher button:hover { background: rgb(255 250 245 / 0.16); }
+.demo-switcher a:hover, .demo-switcher button:hover { background: color-mix(in srgb, var(--paper) 16%, transparent); }
 .demo-switcher a[aria-current="page"] { background: var(--paper); color: var(--ink); }
 .demo-switcher :focus-visible { outline: 3px solid var(--pill); outline-offset: 2px; border-radius: var(--radius-pill); }
 .has-switcher > footer { padding-bottom: 5.5rem; }

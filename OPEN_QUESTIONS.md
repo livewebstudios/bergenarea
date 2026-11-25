@@ -193,3 +193,51 @@ About: `hero-river` in the cool wash in a rounded frame, as specified. Event car
 
 ### M11. Count sentence placement
 Demo 3 prints `There are 33 groups...` in the MEETINGS block (from build-time data) as its section spec asks. Demos 1 and 2 print it under the finder from the live island.
+
+## QA and wrap (task 6)
+
+### Q1. /polish does not rewrite the deck
+The polish pass asks for copy to be run through Jon's voice. The handoff's rule is the opposite for this build: body text is verbatim from the content pack, typos included. The handoff won. Polish covered only the interface strings written for this build, the kill list, em dashes, emoji and the religion word scan. The deck was checked two ways: `deck.ts` against the content pack (51 strings, 8 links, 0 mismatches) and the rendered pages against `deck.ts` (`npm run deck`).
+
+### Q2. /animate and `window.LWS.observe`
+The animate pass mentions `window.LWS.observe(el)` for inserted content. That is the LWS vanilla boilerplate. This is an Astro and React build with a motion budget of one signature move per demo and no other reveals, so there is no observer to call and no extra entrance animation was added.
+
+### Q3. "No JavaScript frameworks" in the LWS boilerplate spec
+The handoff sets the stack as Astro plus React islands (Tier 3). Followed the handoff. Each demo ships 81 to 94 KB of JavaScript, gzipped, under the 120 KB budget.
+
+### Q4. Offline build bug found and fixed
+The first offline test failed: the snapshot fallback read its file by path, and that path does not exist inside Astro's bundled build. The snapshot is now imported, so it travels with the bundle. `npm run build:offline` proves the fallback and prints the warning.
+
+### Q5. Phone drawer in demo 1
+The meeting-details drawer filled the whole phone screen, which left no backdrop to tap. It now stops 48px short of the left edge so the backdrop is always in reach.
+
+### Q6. Demo 3's map on phones
+On a 360 to 412px phone the map's dots are closer together than a fair tap target (some pairs are about 21px apart), and with labels hidden the dot buttons had no name. Lighthouse flagged both. On small maps the dot buttons are now removed and the A to Z chip row (44px chips) is the control. Tapping the map still works: a tap picks the nearest dot, so dots and chips stay in step both ways. On maps 544px and wider the towns are real 44px buttons with visible names, in A to Z tab order.
+
+### Q7. Fonts and layout shift
+Web fonts swapping in were reflowing headings (Lighthouse CLS 0.25 on demo 3). Each demo now declares metric-matched fallback faces (`size-adjust` on Georgia or Arial, measured with `scripts/font-metrics.mjs`), heading widths use `em` instead of `ch`, and demo 3's hills are placed after the content so they do not slide while the page streams in. CLS is now 0.02, 0.03 and 0.
+
+### Q8. Controls in demo 1 got a hairline
+Demo 1's surface rule is flat tint, no outlines. Its day pills, venue chips and town picker were sand on white, which is nearly invisible as a control edge. They now carry a 1px inset line at half-strength ink (about 3:1). Cards stay flat with no outline.
+
+### Q9. Small text
+`SAMPLE` tags and the `HAPPENING NOW` flags were 11px. Raised to 12px.
+
+### Q10. Lighthouse SEO reads 69
+That is the `noindex` review gate doing its job ("page is blocked from indexing"). It returns to normal when the gate comes off at launch.
+
+### Q11. UI/UX Pro Max was not run
+The LWS QA spec asks for a UI/UX Pro Max pass before anything goes to a client. The handoff's task 6 lists the four Impeccable passes only, and nothing was sent to a client in this session. Run it before the preview link goes to the Area. Most of what it covers was measured here anyway: focus rings, keyboard paths, touch targets, live regions and contrast.
+
+### Q12. Open Graph image
+`public/img/og.png` (1200 x 630) is a capture of demo 1's hero: the H1 and the river valley drawing. No people. Replace it once a design is picked.
+
+### Q13. Things only Jon can settle (carried from the handoff's open items)
+1. Ink renders: none were supplied. All seven scenes are coded drawings.
+2. The pin as the recurring mark: built as specified, one component (`PinShape` in `Scene.tsx`).
+3. Peach: used only inside demo 1's sunrise washes.
+4. Typos: kept. See `typos.md`.
+5. Label swaps: `AREA SERVICE` replaces `LEARN MORE`. The other swaps belong to Phase 2 pages.
+6. The PSA video: click-to-play behind a drawn poster. The video itself almost certainly shows people once it plays.
+7. Subcommittee meeting details: not used in this session.
+8. Real Activities and JAC items would replace the two `SAMPLE` cards.

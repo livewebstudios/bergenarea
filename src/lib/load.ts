@@ -1,6 +1,6 @@
 // Build-time loader. Astro calls this once per build: live data first,
 // the committed snapshot when the meeting database cannot be reached.
-import fs from 'node:fs';
+import snapshot from '../data/meetings-snapshot.json';
 import { fetchRaw, normalize, towns, counts, type Meeting, type Snapshot } from './bmlt.ts';
 
 export interface Loaded {
@@ -21,7 +21,8 @@ export function loadMeetings(): Promise<Loaded> {
     try {
       raw = await fetchRaw(fetch, 12000);
     } catch (err) {
-      const snap = JSON.parse(fs.readFileSync(new URL('../data/meetings-snapshot.json', import.meta.url), 'utf8')) as Snapshot;
+      // The snapshot is bundled with the build, so the fallback never depends on a file path.
+      const snap = snapshot as unknown as Snapshot;
       raw = snap;
       source = 'snapshot';
       fetchedAt = snap.fetchedAt;
@@ -29,6 +30,7 @@ export function loadMeetings(): Promise<Loaded> {
       console.warn(`\n${bar}\n!! MEETING DATABASE UNREACHABLE AT BUILD TIME\n!! ${(err as Error).message}\n!! Falling back to src/data/meetings-snapshot.json (saved ${snap.fetchedAt}).\n!! The pages will show the snapshot until the browser refresh reaches BMLT.\n${bar}\n`);
     }
     const meetings = normalize(raw);
+    if (source === 'live') console.log(`[bmlt] live data: ${meetings.length} meetings, ${counts(meetings).groups} groups, ${towns(meetings).length} towns`);
     return { meetings, towns: towns(meetings), counts: counts(meetings), source, fetchedAt };
   })();
   return cached;

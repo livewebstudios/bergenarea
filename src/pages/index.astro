@@ -1,6 +1,5 @@
 ---
 /* Chooser page: review scaffolding. Remove at promote. */
-import fs from 'node:fs';
 import Base from '../layouts/Base.astro';
 import Logo from '../components/shared/Logo.astro';
 import { href, routes } from '../lib/href';
@@ -10,7 +9,7 @@ const cards = [
   { n: 1, name: 'Open Road', url: routes.demo1(), line: 'Warm paper, a pen-and-ink river valley, and a dotted path that walks you down the page to a meeting.' },
   { n: 2, name: "Tonight's Board", url: routes.demo2(), line: 'Open the site and the next meeting is already on screen. Pastel tiles, ink outlines, zero hunting.' },
   { n: 3, name: 'Twenty Towns', url: routes.demo3(), line: 'A hand-drawn map of the county under a cool morning sky. Tap your town and see your meetings.' },
-].map((c) => ({ ...c, shot: fs.existsSync(new URL(`../../public/img/chooser-${c.n}.png`, import.meta.url)) }));
+];
 ---
 <Base title="Bergen Area of Narcotics Anonymous | Three designs" description="This site is hosted by the Narcotics Anonymous Bergen County Area Committee in New Jersey." bodyClass="chooser grain">
   <main>
@@ -22,7 +21,7 @@ const cards = [
       {cards.map((c) => (
         <li class="chooser-card">
           <div class="chooser-card__shot">
-            {c.shot && <img src={href(`img/chooser-${c.n}.png`)} alt={`Design ${c.n}, ${c.name}: the top of the home page`} width="1200" height="750" loading="lazy" decoding="async" />}
+            <img src={href(`img/chooser-${c.n}.png`)} alt={`Design ${c.n}, ${c.name}: the top of the home page`} width="1200" height="750" loading={c.n === 1 ? 'eager' : 'lazy'} decoding="async" />
           </div>
           <div class="chooser-card__body">
             <p class="chooser-card__num">DESIGN {c.n}</p>

@@ -1,9 +1,15 @@
 /* Demo 3: Twenty Towns. Cool: sky and mist up top with a pale butter sun, white and paper in
    the middle, deep lake bands low on the page. White cards with a thin lake rule.
    Lake pill buttons, butter secondary. Fraunces + Source Sans 3 + Patrick Hand. */
+/* Metric-matched fallbacks: system fonts scaled to set text the same width as the web font,
+   so nothing reflows when the real font arrives (measured with scripts/font-metrics.mjs). */
+@font-face { font-family: "Fraunces Fallback"; src: local("Georgia Bold"); font-weight: 600; size-adjust: 93.8%; }
+@font-face { font-family: "Fraunces Fallback"; src: local("Georgia Bold"); font-weight: 700; size-adjust: 95.8%; }
+@font-face { font-family: "Source Sans Fallback"; src: local("Arial"), local("Helvetica Neue"), local("Roboto"); font-weight: 400; size-adjust: 92.6%; }
+@font-face { font-family: "Source Sans Fallback"; src: local("Arial Bold"), local("Helvetica Neue Bold"), local("Roboto Bold"); font-weight: 600; size-adjust: 87.4%; }
 .d3 {
-  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
-  --font-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", "Fraunces Fallback", Georgia, serif;
+  --font-body: "Source Sans 3", "Source Sans Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-hand: "Patrick Hand", "Comic Sans MS", cursive;
   --hill: color-mix(in srgb, var(--dusk) 42%, var(--mist));
   --rule: color-mix(in srgb, var(--lake) 32%, var(--white));
@@ -42,7 +48,7 @@
 /* 2. sticky white nav (the logo needs a light ground) */
 .d3-nav { position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--rule); }
 .d3-nav__in { display: flex; align-items: center; gap: var(--space-4); min-height: 4.25rem; }
-.d3-nav__logo { flex: none; }
+.d3-nav__logo { flex: none; display: flex; align-items: center; min-height: var(--tap); }
 .d3-nav__logo img { width: clamp(8.5rem, 21vw, 12.5rem); }
 .d3-nav__links { margin-left: auto; }
 .d3-nav__links > ul { display: flex; align-items: center; gap: 0.1rem; }
@@ -75,18 +81,18 @@
 }
 
 /* 3. map hero on the sky wash: D's layered hills and a sun disc. Flat shapes, never animated. */
-.d3-hero { position: relative; overflow: clip; background: var(--sky); padding-block: clamp(1.5rem, 1rem + 2.6vw, 3rem) clamp(2.5rem, 1.5rem + 4vw, 5rem); }
-.d3-hero__sun { position: absolute; top: clamp(1rem, 4vw, 3.5rem); right: 8%; width: clamp(7rem, 16vw, 14rem); height: auto; }
+.d3-hero { position: relative; isolation: isolate; overflow: clip; background: var(--sky); padding-block: clamp(1.5rem, 1rem + 2.6vw, 3rem) clamp(2.5rem, 1.5rem + 4vw, 5rem); }
+.d3-hero__sun { position: absolute; z-index: -1; top: clamp(1rem, 4vw, 3.5rem); right: 8%; width: clamp(7rem, 16vw, 14rem); height: auto; }
 @media (min-width: 62rem) { .d3-hero__sun { right: 44%; } }
 .d3-hero__sun circle { fill: var(--butter); }
-.d3-hero__hills { position: absolute; left: 0; bottom: 0; width: 100%; height: min(62%, 44rem); }
+.d3-hero__hills { position: absolute; z-index: -1; left: 0; bottom: 0; width: 100%; height: min(62%, 44rem); }
 .d3-hill--far { fill: var(--mist); }
 .d3-hill--mid { fill: var(--hill); }
 .d3-hill--near { fill: var(--dusk); }
 .d3-hill--meadow { fill: var(--tan); }
 .d3-hero__in { position: relative; display: grid; gap: var(--space-5); }
 .d3-hero__text { display: grid; gap: var(--space-3); justify-items: start; }
-.d3-hero__title { font-size: clamp(1.875rem, 1.1rem + 3.4vw, 3.5rem); max-width: 14ch; }
+.d3-hero__title { font-size: clamp(1.875rem, 1.1rem + 3.4vw, 3.5rem); max-width: 9.6em; }
 .d3-hero__finder, .d3-finder { display: contents; }
 .d3-mapcol { display: grid; gap: var(--space-3); min-width: 0; container: mapcol / inline-size; }
 @media (min-width: 62rem) {
@@ -97,7 +103,7 @@
 }
 
 /* the map: a paper sheet with slightly uneven edges, as if laid on the scene */
-.d3-sheet { filter: drop-shadow(4px 5px 0 rgb(28 26 23 / 0.22)); }
+.d3-sheet { filter: drop-shadow(4px 5px 0 color-mix(in srgb, var(--ink) 22%, transparent)); }
 .d3-map {
   position: relative; container-type: inline-size; aspect-ratio: 4 / 5; background: var(--paper);
   clip-path: polygon(0.7% 0.9%, 31% 0.2%, 68% 0.8%, 99.3% 0.3%, 99.8% 36%, 99.1% 71%, 99.6% 99.3%, 64% 99.8%, 29% 99.1%, 0.4% 99.6%, 0.9% 62%, 0.2% 28%);
@@ -119,10 +125,13 @@
 .d3-map__river, .d3-map__n { position: absolute; translate: -50% -50%; font: 400 max(1rem, 2.5cqw)/1 var(--font-hand); color: var(--lake); white-space: nowrap; pointer-events: none; }
 .d3-map__river { letter-spacing: 0.2em; }
 .d3-map__n { font-size: max(1rem, 3.2cqw); color: var(--ink); }
-/* a small map cannot hold twenty labels: dots and pins only, and the chosen town's name beside its dot */
+/* a small map cannot hold twenty labels, and its dots sit too close for fair tap targets:
+   dots and pins only, the chip row below is the control, and the chosen town's name shows beside its dot */
+.d3-picked { display: none; position: absolute; width: 0; height: 0; pointer-events: none; }
+.d3-picked .d3-town__label { color: var(--rust); background: var(--paper); border-radius: 4px; padding: 0 0.2em; }
 @container (max-width: 34rem) {
-  .d3-town__label { display: none; }
-  .d3-town[aria-pressed="true"] .d3-town__label { display: block; background: var(--paper); border-radius: 4px; z-index: 2; }
+  .d3-town { display: none; }
+  .d3-picked { display: block; }
 }
 
 /* town chips: a sideways-scrolling row, A to Z, in step with the dots */
@@ -147,12 +156,12 @@
 .d3-panel__title { font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.375rem); }
 .d3-reset { display: inline-flex; align-items: center; gap: 0.35rem; min-height: var(--tap); padding: 0 0.95rem; border: 1px solid var(--lake); border-radius: var(--radius-pill); background: var(--butter); font: 600 0.9375rem/1 var(--font-body); }
 .d3-days { display: flex; flex-wrap: wrap; gap: 0.3rem; }
-.d3-day { position: relative; min-width: var(--tap); min-height: var(--tap); padding: 0 0.65rem; border: 1px solid var(--rule); border-radius: var(--radius-pill); background: var(--white); font: 600 0.875rem/1 var(--font-body); transition: background-color 150ms; }
+.d3-day { position: relative; min-width: var(--tap); min-height: var(--tap); padding: 0 0.65rem; border: 1px solid var(--lake); border-radius: var(--radius-pill); background: var(--white); font: 600 0.875rem/1 var(--font-body); transition: background-color 150ms; }
 .d3-day:hover { background: var(--mist); }
 .d3-day.is-today::after { content: ""; position: absolute; left: 50%; bottom: 0.3rem; width: 0.4rem; height: 0.4rem; translate: -50% 0; border-radius: 50%; background: var(--rust); }
 .d3-day[aria-pressed="true"] { background: var(--lake); border-color: var(--lake); color: var(--paper); }
 .d3-venue { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.d3-venue button { display: inline-flex; align-items: center; gap: 0.45rem; min-height: var(--tap); padding: 0 1rem; border: 1px solid var(--rule); border-radius: var(--radius-pill); background: var(--white); font: 600 0.9375rem/1 var(--font-body); transition: background-color 150ms; }
+.d3-venue button { display: inline-flex; align-items: center; gap: 0.45rem; min-height: var(--tap); padding: 0 1rem; border: 1px solid var(--lake); border-radius: var(--radius-pill); background: var(--white); font: 600 0.9375rem/1 var(--font-body); transition: background-color 150ms; }
 .d3-venue button:hover { background: var(--mist); }
 .d3-venue button[aria-pressed="true"] { background: var(--lake); border-color: var(--lake); color: var(--paper); }
 .d3-group__day { font: 600 0.8125rem/1 var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--lake); padding-block: 0.75rem 0.4rem; }
@@ -167,6 +176,8 @@
 .d3-item__place { grid-column: 1; color: var(--muted); font-size: 0.9375rem; }
 .d3-item__flag { grid-column: 2; grid-row: 1 / span 3; padding: 0.3rem 0.6rem; border-radius: var(--radius-pill); background: var(--lake); color: var(--paper); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
 .d3-item--now .d3-item__flag { background: var(--rust); color: var(--white); }
+/* narrow phones: the flag drops under the row so the time stays on one line */
+@media (max-width: 21.5rem) { .d3-item { grid-template-columns: minmax(0, 1fr); } .d3-item__flag { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 0.3rem; } }
 .d3-none { padding: var(--space-5) 0; color: var(--muted); border-top: 1px solid var(--rule); }
 
 /* bands: white, pale mist, deep lake, paper (D's rhythm) */
@@ -201,7 +212,7 @@
 .d3-event__title { font-weight: 600; font-size: 1.0625rem; }
 .d3-event__when { font-weight: 600; color: var(--lake); }
 .d3-event__where { color: var(--muted); }
-.d3-event a { overflow-wrap: anywhere; }
+.d3-event a { display: inline-flex; align-items: center; min-height: var(--tap); overflow-wrap: anywhere; }
 .d3-event__none { padding-block: 0.75rem; border-top: 1px solid var(--rule); color: var(--muted); }
 .d3-card__all { display: inline-flex; align-items: center; gap: 0.45rem; align-self: flex-start; min-height: var(--tap); font-weight: 600; color: var(--lake); text-underline-offset: 0.25em; }
 .d3-events__more { margin-top: var(--space-6); }
@@ -224,7 +235,7 @@
 .d3-video-wrap { max-width: 56rem; }
 .d3-video { border-radius: 22px; border: 1px solid var(--lake); background: var(--sky); }
 /* the poster drawing is a 4:3 spot, so it sits whole in the middle of the 16:9 frame instead of being cropped */
-.d3-video .video__poster .scene { inset: 0 auto 0 50%; width: auto; height: 100%; aspect-ratio: 4 / 3; translate: -50% 0; }
+.d3-video .video__poster .scene { inset: 0 12.5%; width: 75%; height: 100%; aspect-ratio: auto; }
 .d3-video .video__pill { min-height: 3.25rem; padding: 0 1.6rem 0 1.2rem; border: var(--outline); border-radius: var(--radius-pill); background: var(--lake); color: var(--paper); box-shadow: var(--shadow-hard); font: 600 1rem/1 var(--font-body); transition: translate 150ms var(--ease), box-shadow 150ms var(--ease); }
 .d3-video .video__poster:hover .video__pill, .d3-video .video__poster:focus-visible .video__pill { translate: 2px 2px; box-shadow: 1px 1px 0 var(--ink); }
 .d3-video .video__poster:focus-visible { outline-offset: -6px; }
@@ -248,7 +259,7 @@
 .d3-footer__brand { display: grid; gap: var(--space-3); justify-items: start; }
 .d3-footer__plate { display: block; padding: 0.7rem 1rem; background: var(--paper); border-radius: 12px; }
 .d3-footer a { color: var(--paper); font-weight: 600; }
-.d3-footer__brand p a, .d3-footer__meta a { display: inline-block; padding-block: 0.65rem; margin-block: -0.65rem; }
+.d3-footer__brand p a, .d3-footer__meta a { display: inline-block; padding-block: 0.8rem; margin-block: -0.8rem; }
 .d3-footer__nav ul { display: grid; grid-template-columns: repeat(2, max-content); gap: 0 var(--space-6); }
 .d3-footer__nav a { display: flex; align-items: center; min-height: var(--tap); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.8125rem; text-decoration: none; }
 .d3-footer__nav a:hover { text-decoration: underline; }

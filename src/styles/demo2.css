@@ -1,9 +1,14 @@
 /* Demo 2: Tonight's Board. White page, pastel tiles with the ink outline and the hard
    offset shadow, organic blobs behind. Ink rounded-rectangle buttons.
    Bricolage Grotesque + Inter + IBM Plex Mono. */
+/* Metric-matched fallbacks: system fonts scaled to set text the same width as the web font,
+   so nothing reflows when the real font arrives (measured with scripts/font-metrics.mjs). */
+@font-face { font-family: "Bricolage Fallback"; src: local("Arial Bold"), local("Helvetica Neue Bold"), local("Roboto Bold"); font-weight: 600 700; size-adjust: 98.5%; }
+@font-face { font-family: "Inter Fallback"; src: local("Arial"), local("Helvetica Neue"), local("Roboto"); font-weight: 400; size-adjust: 106.8%; }
+@font-face { font-family: "Inter Fallback"; src: local("Arial Bold"), local("Helvetica Neue Bold"), local("Roboto Bold"); font-weight: 600; size-adjust: 100.7%; }
 .d2 {
-  --font-display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque", "Bricolage Fallback", system-ui, sans-serif;
+  --font-body: "Inter", "Inter Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
   /* single-tint wash: the tile's own color does the work */
   --scene-sky: transparent;
@@ -39,7 +44,7 @@
 .d2-helpline :focus-visible { outline-color: var(--white); }
 .d2-nav { background: var(--white); border-bottom: var(--outline); }
 .d2-nav__in { display: flex; align-items: center; gap: var(--space-3); min-height: 3.5rem; }
-.d2-nav__logo { flex: none; }
+.d2-nav__logo { flex: none; display: flex; align-items: center; min-height: var(--tap); }
 .d2-nav__logo img { width: clamp(8rem, 20vw, 11rem); }
 .d2-nav__links { margin-left: auto; }
 .d2-nav__links > ul { display: flex; align-items: center; }
@@ -103,7 +108,7 @@
 .d2-next__dot.is-on { background: var(--rust); }
 .d2-next__time { font-size: clamp(3rem, 1.2rem + 4.4vw, 4.75rem); line-height: 0.95; letter-spacing: -0.05em; margin-block: 0.15rem 0.1rem; }
 .d2-next__day { display: inline-block; margin-left: 0.75rem; padding: 0.3rem 0.6rem; border: var(--outline); border-radius: 8px; background: var(--white); font-size: 0.875rem; letter-spacing: 0.02em; vertical-align: middle; }
-.d2-next__name { font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem); max-width: 18ch; }
+.d2-next__name { font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem); max-width: 10.5em; }
 .d2-next__place { font-size: 1.0625rem; color: var(--ink); }
 .d2-next__count { margin-top: 0.4rem; padding: 0.45rem 0.8rem; border: var(--outline); border-radius: 8px; background: var(--white); font-size: 1rem; }
 .d2-next__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: 0.75rem; }
@@ -115,6 +120,8 @@
 .d2-today__title { font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem); }
 .d2-days { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .d2-day { min-width: var(--tap); min-height: var(--tap); padding: 0 0.7rem; border: var(--outline); border-radius: 10px; background: var(--white); font: 600 0.875rem/1 var(--font-body); transition: background-color 150ms; }
+.d2-day:nth-child(1) { min-width: 4.1rem; }
+.d2-day:nth-child(2) { min-width: 5.9rem; }
 .d2-day:hover { background: var(--mint); }
 .d2-day[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 .d2-seg { display: grid; grid-template-columns: 1fr 1fr; border: var(--outline); border-radius: 12px; overflow: hidden; background: var(--white); }
@@ -140,10 +147,16 @@
 .d2-card__main { display: grid; min-width: 0; }
 .d2-card__name { font-weight: 600; }
 .d2-card__town { color: var(--muted); font-size: 0.9375rem; }
-.d2-card__flag { grid-column: 2 / -1; justify-self: start; padding: 0.2rem 0.5rem; border-radius: 6px; background: var(--ink); color: var(--paper); font: 500 0.6875rem/1.2 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.d2-card__flag { grid-column: 2 / -1; justify-self: start; padding: 0.2rem 0.5rem; border-radius: 6px; background: var(--ink); color: var(--paper); font: 500 0.75rem/1.2 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
 @media (min-width: 36rem) {
   .d2-card { grid-template-columns: auto auto minmax(0, 1fr) auto; }
   .d2-card__flag { grid-column: auto; }
+}
+/* narrow phones: the time sits above the name so the name gets the full width */
+@media (max-width: 26rem) {
+  .d2-card { grid-template-columns: auto minmax(0, 1fr); }
+  .d2-card__chip { grid-row: 1 / span 3; align-self: start; }
+  .d2-card__time, .d2-card__main, .d2-card__flag { grid-column: 2; }
 }
 .d2-none { padding: var(--space-4); border: 1.5px dashed var(--ink); border-radius: 12px; background: var(--white); color: var(--muted); }
 .d2-count { margin-top: var(--space-5); color: var(--muted); font-size: 0.9375rem; }
@@ -174,7 +187,7 @@
 .d2-event__title { font-weight: 600; font-size: 1rem; }
 .d2-event__when { font-size: 0.875rem; margin-block: 0.15rem; }
 .d2-event__where { color: var(--muted); }
-.d2-event a { overflow-wrap: anywhere; }
+.d2-event a { display: inline-flex; align-items: center; min-height: var(--tap); overflow-wrap: anywhere; }
 .d2-event__none { padding: 0.75rem 0.85rem; border: 1.5px dashed var(--ink); border-radius: 10px; color: var(--ink); }
 .d2-event-tile .d2-btn { align-self: flex-start; }
 .d2-events__after { display: grid; gap: var(--space-4); align-items: center; justify-items: start; margin-top: var(--space-6); }
@@ -234,7 +247,7 @@
 .d2-footer__in { display: grid; gap: var(--space-5); }
 .d2-footer__brand { display: grid; gap: var(--space-3); justify-items: start; }
 .d2-footer a { color: var(--ink); font-weight: 600; }
-.d2-footer__brand p a, .d2-footer__meta a { display: inline-block; padding-block: 0.65rem; margin-block: -0.65rem; }
+.d2-footer__brand p a, .d2-footer__meta a { display: inline-block; padding-block: 0.8rem; margin-block: -0.8rem; }
 .d2-footer__nav ul { display: grid; grid-template-columns: repeat(2, max-content); gap: 0 var(--space-6); }
 .d2-footer__nav a { display: flex; align-items: center; min-height: var(--tap); text-transform: uppercase; letter-spacing: 0.07em; font-size: 0.78rem; text-decoration: none; }
 .d2-footer__nav a:hover { text-decoration: underline; }
