@@ -1,8 +1,222 @@
 ---
+/* Demo 3: Twenty Towns. A hand-drawn map of the county under a cool morning sky.
+   Tap your town and see your meetings. Leads with reference D, ink from B, dotted lines from C. */
+import '@fontsource/fraunces/latin-600.css';
+import '@fontsource/fraunces/latin-700.css';
+import '@fontsource/source-sans-3/latin-400.css';
+import '@fontsource/source-sans-3/latin-600.css';
+import '@fontsource/patrick-hand/latin-400.css';
+import '../../../styles/demo3.css';
 import Base from '../../../layouts/Base.astro';
 import DemoSwitcher from '../../../components/shared/DemoSwitcher.astro';
+import HelplineBar from '../../../components/shared/HelplineBar.astro';
+import VideoPoster from '../../../components/shared/VideoPoster.astro';
+import { Scene } from '../../../components/shared/Scene';
+import { Icon } from '../../../components/shared/icons/Icon';
+import Map3 from '../../../components/demo3/Map3';
+import Notice3 from '../../../components/demo3/Notice3';
+import { deck, ui } from '../../../content/deck';
+import { href, STUB } from '../../../lib/href';
+import { loadMeetings } from '../../../lib/load';
+import { loadHome } from '../../../lib/home';
+import { band } from '../../../lib/ink/wash';
+import outline from '../../../data/bergen-outline.json';
+
+const buildNow = new Date();
+const data = await loadMeetings();
+const home = loadHome(buildNow);
+const year = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric' }).format(buildNow));
+const FINDER = '#meetings';
+const navHref = (label: string) => (label === 'Meetings' ? FINDER : STUB);
+const areas = [
+  { label: ui.upcomingMeetings, slot: 'table', items: home.area },
+  { label: ui.convention, slot: 'fireworks', items: home.convention },
+  { label: ui.activities, slot: 'pavilion', items: home.activities },
+] as const;
+const h = deck.site.helpline;
+const ring = outline.ring as [number, number][];
+/* D's flat layered landscape behind the map: hills as stacked tints. Wash only, no ink. */
+const hills = [
+  { c: 'd3-hill--far', d: band(1600, 600, 250, 190, 46, 1.4) },
+  { c: 'd3-hill--mid', d: band(1600, 600, 330, 380, 40, 3.1) },
+  { c: 'd3-hill--near', d: band(1600, 600, 450, 420, 30, 5.2) },
+  { c: 'd3-hill--meadow', d: band(1600, 600, 540, 556, 12, 6.6) },
+];
 ---
-<Base title="Bergen Area of Narcotics Anonymous | Just for Today" description="This site is hosted by the Narcotics Anonymous Bergen County Area Committee in New Jersey." bodyClass="has-switcher">
-  <main class="wrap"><h1>BERGEN COUNTY AREA WEBSITE</h1></main>
+<Base title={deck.site.browserTitle} description="This site is hosted by the Narcotics Anonymous Bergen County Area Committee in New Jersey." bodyClass="d3 has-switcher">
+  <a class="skip-link" href={FINDER}>{deck.site.headerButton}</a>
+  <HelplineBar class="d3-helpline" />
+
+  <header class="d3-nav" data-nav>
+    <div class="wrap d3-nav__in">
+      <a class="d3-nav__logo" href={href('demo/twenty-towns/')}><img src={href('img/logo.png')} alt={deck.site.logoAlt} width="200" height="43" /></a>
+      <button type="button" class="d3-nav__menu" data-nav-toggle aria-expanded="false" aria-controls="d3-menu"><Icon name="menu" /><span>{ui.menu}</span></button>
+      <nav id="d3-menu" class="d3-nav__links" aria-label={ui.menu}>
+        <ul>
+          {deck.site.nav.map((item) => (
+            <li>
+              {item.children ? (
+                <>
+                  <button type="button" data-sub-toggle aria-expanded="false">{item.label}</button>
+                  <ul class="d3-nav__sub">
+                    {item.children.map((child) => <li><a href={STUB}>{child}</a></li>)}
+                  </ul>
+                </>
+              ) : (
+                <a href={navHref(item.label)}>{item.label}</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <a class="d3-btn d3-nav__cta" href={FINDER} data-deck="header-button">{deck.site.headerButton}</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="meetings" class="d3-hero">
+      <svg class="d3-hero__sun" viewBox="0 0 200 200" aria-hidden="true" focusable="false"><circle cx="100" cy="100" r="100" /></svg>
+      <svg class="d3-hero__hills" viewBox="0 0 1600 600" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        {hills.map((hill) => <path class={hill.c} d={hill.d} />)}
+      </svg>
+      <div class="wrap d3-hero__in">
+        <div class="d3-hero__text">
+          <p class="d3-kicker" data-deck="kicker">{deck.hero.kicker}</p>
+          <h1 class="d3-display d3-hero__title" data-deck="h1">{deck.hero.h1}</h1>
+          <a class="d3-btn" href={FINDER}><span data-deck="hero-button">{deck.hero.button}</span><Icon name="arrow" /></a>
+        </div>
+        <div class="d3-hero__finder">
+          <Map3 client:load meetings={data.meetings} buildNow={buildNow.getTime()} ring={ring} />
+        </div>
+      </div>
+    </section>
+
+    <section class="d3-band d3-band--white">
+      <div class="wrap d3-meet">
+        <h2 class="d3-display d3-h2" data-deck="meetings-heading">{deck.meetings.heading}</h2>
+        <p class="d3-display d3-meet__towns" data-deck="towns">{deck.meetings.townsSentence(data.towns)}</p>
+        <div class="d3-meet__rest">
+          <div class="d3-meet__col">
+            <p class="d3-meet__count" data-deck="count">{deck.meetings.countSentence(data.counts.groups, data.counts.meetings)}</p>
+            <p data-deck="meetings-second">{deck.meetings.second}</p>
+            <a class="d3-btn" href={FINDER}><span data-deck="meetings-button">{deck.meetings.button}</span><Icon name="arrow" /></a>
+          </div>
+          <div class="d3-meet__col d3-meet__app">
+            <p data-deck="app">{deck.meetings.app}</p>
+            <ul class="d3-badges">
+              {deck.meetings.badges.map((b) => (
+                <li><a href={b.href} target="_blank" rel="noopener noreferrer"><img src={href(b.img)} alt={b.alt} width={b.width} height={b.height} loading="lazy" decoding="async" /></a></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="d3-band d3-band--mist">
+      <div class="wrap">
+        <div class="d3-events__intro">
+          <h2 class="d3-display d3-h2" data-deck="events-heading">{deck.events.heading}</h2>
+          <p data-deck="events-paragraph">{deck.events.paragraph.map((part) => (part.href ? <a href={part.href} target="_blank" rel="noopener noreferrer">{part.text}</a> : part.text))}</p>
+        </div>
+        <ul class="d3-cards">
+          {areas.map((area) => (
+            <li class="d3-card">
+              <div class="d3-card__art"><Scene slot={area.slot} /></div>
+              <div class="d3-card__body">
+                <h3 class="d3-display d3-card__label">{area.label}</h3>
+                <div class="d3-card__items" data-upcoming data-limit="2">
+                  <ul>
+                    {area.items.map((ev, i) => (
+                      <li class="d3-event" data-expires={ev.expires} hidden={i > 1}>
+                        <p class="d3-event__title">{ev.title}{ev.sample && <> <span class="sample-tag">{ui.sample}</span></>}</p>
+                        <p class="d3-event__when">{ev.when}</p>
+                        {ev.location_name && <p class="d3-event__where">{ev.location_name}</p>}
+                        {ev.address && <p class="d3-event__where">{ev.address}</p>}
+                        {ev.note && <p class="d3-event__where">{ev.note}</p>}
+                        {ev.virtual_link && <p><a href={ev.virtual_link} target="_blank" rel="noopener noreferrer">{ui.joinZoom}</a></p>}
+                        {ev.link_url && ev.link_label && <p><a href={ev.link_url} target="_blank" rel="noopener noreferrer">{ev.link_label}</a></p>}
+                      </li>
+                    ))}
+                  </ul>
+                  <p class="d3-event__none" data-empty hidden={area.items.length > 0}>{ui.nothingPosted}</p>
+                </div>
+                <a class="d3-card__all" href={STUB}>{ui.allEvents}<Icon name="arrow" /></a>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <p class="d3-events__more"><a class="d3-btn" href={STUB}><span data-deck="events-button">{deck.events.button}</span><Icon name="arrow" /></a></p>
+      </div>
+    </section>
+
+    <section class="d3-band d3-band--lake on-deep">
+      <div class="wrap d3-area">
+        <h2 class="d3-display d3-h2" data-deck="area-heading">{deck.areaService.heading}</h2>
+        <div class="d3-area__text">
+          {deck.areaService.paragraphs.map((p, i) => <p data-deck={`area-p${i + 1}`}>{p}</p>)}
+          <a class="d3-btn d3-btn--alt" href={STUB}><span data-deck="area-button">{deck.areaService.button}</span><Icon name="arrow" /></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="d3-band d3-band--paper">
+      <div class="wrap d3-about">
+        <div class="d3-about__text">
+          <p data-deck="about-p1">{deck.about.first.map((part) => (part.bold ? <strong>{part.text}</strong> : part.text))}</p>
+          {deck.about.rest.map((p, i) => <p data-deck={`about-p${i + 2}`}>{p}</p>)}
+        </div>
+        <div class="d3-about__art"><Scene slot="hero-river" anchor="left" /></div>
+      </div>
+    </section>
+
+    <section class="d3-band d3-band--white d3-band--video">
+      <div class="wrap d3-video-wrap">
+        <VideoPoster slot="table" class="d3-video" />
+      </div>
+    </section>
+
+    <section class="d3-band d3-band--white d3-band--links">
+      <div class="wrap d3-links">
+        <h2 class="d3-display d3-h2" data-deck="links-heading">{deck.otherLinks.heading}</h2>
+        <ul>
+          {deck.otherLinks.links.map((link, i) => (
+            <li><a href={link.href} target="_blank" rel="noopener noreferrer"><Icon name="arrow" /><span data-deck={`link-${i + 1}`}>{link.label}</span></a></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <div class="d3-closing"><Scene slot="road-horizon" /></div>
+  </main>
+
+  <footer class="d3-footer on-deep">
+    <div class="wrap d3-footer__in">
+      <div class="d3-footer__brand">
+        <span class="d3-footer__plate"><img src={href('img/logo.png')} alt={deck.site.logoAlt} width="200" height="43" loading="lazy" decoding="async" /></span>
+        <p>{h.before}<a href={h.first.href}>{h.first.label}</a><span class="nowrap">{h.between}<a href={h.second.href}>{h.second.label}</a>{h.after}</span></p>
+        <p><a href={`mailto:${deck.site.email}`}>{deck.site.email}</a></p>
+      </div>
+      <nav class="d3-footer__nav" aria-label="BergenArea.org">
+        <ul>
+          {deck.site.footerNav.map((label) => <li><a href={navHref(label)}>{label}</a></li>)}
+        </ul>
+      </nav>
+      <div class="d3-footer__meta">
+        <img src={href('img/verifiedsecured.png')} alt="Live Web Studios: verified and secured" width="150" height="37" loading="lazy" decoding="async" />
+        <p>Built by <a href="https://livewebstudios.com" target="_blank" rel="noopener noreferrer">Live Web Studios</a></p>
+        <p data-deck="copyright">{deck.site.copyright(year)}</p>
+      </div>
+    </div>
+  </footer>
+
+  <Notice3 client:idle notice={home.notice} />
   <DemoSwitcher current={3} />
 </Base>
+
+<script>
+  import { initNav } from '../../../lib/nav-client';
+  import { watchUpcoming } from '../../../lib/upcoming-client';
+  initNav();
+  watchUpcoming();
+</script>

@@ -158,3 +158,38 @@ Helpline bar and nav stick together on phones (about 108px). On tablets and desk
 
 ### T9. Pictures in this demo
 Next tile: `chairs` with the pin. Event tiles: `table`, `fireworks`, `pavilion` as round spots. About: `keytag` in an oval. Video poster: `pavilion` in a single mint wash (the handoff names no slot). Closing: a short `road-horizon` strip.
+
+## Demo 3: Twenty Towns (task 5)
+
+### M1. The map is computed, nothing is placed by hand
+`src/lib/map.ts` puts each town at the average latitude and longitude of its in-person and hybrid meetings. Woodridge has only a virtual meeting, so it uses that meeting's coordinates, as the handoff says. Projection is equirectangular corrected by the cosine of the mean latitude, fitted to an 800 x 1000 box with padding. Dot size grows with the number of meetings filed under the town.
+
+### M2. Label collision pass
+Each label tries sixteen spots around its dot (beside, diagonal, above, below, then the same a little further out). The most crowded towns choose first and everything gets four rounds of second thoughts. A label may not sit on another label, another dot, the river line, the river's own label, or the space just above any dot (where a pin can land on any given day). In the tight southeast corner a few labels end up a short distance from their dots (Englewood, Teaneck, Bogota). Every label is part of its town's button, so tapping the name works as well as tapping the dot.
+
+### M3. County outline and the Hudson
+The dotted outline is the Census outline from K11. The east edge of that outline is the Hudson, so the river is one wavy ink line running just offshore of it (with a thinner second stroke), labelled `HUDSON RIVER` along its upper reach where there are no towns. A small `N` arrow sits bottom left. Tree stamps (pine and hardwood from the icon set) are scattered inside the outline and kept off labels, dots and pin space.
+
+### M4. Town picker in this demo
+The map is the town picker. There is no dropdown. Tapping a town (dot or name) shows that town's whole week in the panel, grouped by day starting today, and hides the day tabs. `All towns` in the panel header resets it. Tapping the chosen town again also clears it.
+
+### M5. When labels show and when chips show
+Labels need room, so they show only when the map is at least 544px wide. Below that the map shows dots and pins only, the chosen town's name appears beside its dot, and the A to Z chip row appears under the map. This is tied to the map's own width (a container query), not the screen, so a tablet in two-column layout gets chips too.
+
+### M6. The Virtual box
+One outlined box under the map labelled `Virtual` with the count of virtual meetings (18 on build day). It is the same control as the `Virtual` venue button in the panel and the two stay in step.
+
+### M7. The map draws without JavaScript
+The ink-in animation is plain CSS (outline and river wipe in over 900ms, dots land in a 34ms stagger and finish inside 1.2s, pins drop at 1.2s), so it does not wait for the island to hydrate and never replays on a re-render. Reduced motion shows everything in place and makes the selection ring solid. Pins are a live claim (today's towns), so they appear only once the browser clock is running.
+
+### M8. Paper heading on the lake band
+Section 5.4 says display type is always ink. Ink on `--lake` is about 2.5:1, which fails. The handoff's own demo 3 spec says "deep lake band with paper text", so the `AREA SERVICE` heading on that band is paper (6.82:1). Everywhere else display type is ink.
+
+### M9. Dusk under ink, never under text
+`--dusk` appears in the hero's near hill and the closing picture's ground band. Only ink line work and opaque white cards sit on it. No text sits on dusk.
+
+### M10. Pictures in this demo
+About: `hero-river` in the cool wash in a rounded frame, as specified. Event cards: `table`, `fireworks`, `pavilion` on the cool wash. Video poster: `table`, shown whole in the middle of the 16:9 frame (the handoff names no slot). Closing: `road-horizon` over sky, mist and dusk into the lake footer.
+
+### M11. Count sentence placement
+Demo 3 prints `There are 33 groups...` in the MEETINGS block (from build-time data) as its section spec asks. Demos 1 and 2 print it under the finder from the live island.

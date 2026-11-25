@@ -9,7 +9,7 @@ const wob = (x: number, seed: number) =>
   Math.sin(x * 0.0041 + seed) * 0.5 + Math.sin(x * 0.0113 + seed * 2.3) * 0.3 + Math.sin(x * 0.0237 + seed * 4.1) * 0.2;
 
 /** A band with a gently wobbling top edge, running to the bottom of the picture. */
-function band(w: number, h: number, yLeft: number, yRight: number, amp: number, seed: number): string {
+export function band(w: number, h: number, yLeft: number, yRight: number, amp: number, seed: number): string {
   let d = `M0 ${h} L0 ${yLeft.toFixed(1)}`;
   for (let i = 0; i <= 28; i++) {
     const x = (w * i) / 28;
