@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" data-role="webmaster">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Site Admin: Bergen Area | Home page popup</title>
+  <style>
+    .gate-msg, #gate-wait { width: min(100% - 2rem, 34rem); margin: 4rem auto; padding: 1.5rem; font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #1C1A17; }
+    .gate-msg { background: #fff; border: 1.5px solid #1C1A17; border-radius: 14px; }
+    .gate-msg p { margin: 0 0 1rem; }
+    .gate-msg .row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 0; }
+    .gate-msg .btn { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.5rem 1.25rem; border: 1.5px solid #1C1A17; border-radius: 999px; background: #6FD0BD; color: #1C1A17; font: 600 1rem/1.2 inherit; text-decoration: none; cursor: pointer; }
+    .gate-msg .btn--quiet { background: #fff; }
+  </style>
+  <!-- Decap starts only after the role check in gate.js. -->
+  <script>window.CMS_MANUAL_INIT = true;</script>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <p id="gate-wait">Loading the editor...</p>
+  <!-- Pinned to exactly 3.1.2. Later versions crash on an empty optional image field. -->
+  <script src="https://unpkg.com/decap-cms@3.1.2/dist/decap-cms.js"></script>
+  <script>
+    // Every save gives the popup a new id, so visitors who closed the last one see the new one.
+    CMS.registerEventListener({
+      name: 'preSave',
+      handler: function (ctx) {
+        return ctx.entry.get('data').set('id', 'n' + Date.now().toString(36));
+      },
+    });
+  </script>
+  <script src="../gate.js"></script>
+</body>
+</html>

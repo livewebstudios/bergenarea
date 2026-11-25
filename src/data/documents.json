@@ -1,0 +1,22 @@
+{
+  "_readme": "Area Service documents. Policies are Google Docs. Forms and logos are files: put each file in public/docs/ with the same name and the site links to it there. Until a file is in public/docs/, the link points at the old site's copy (old_url). updated is optional, YYYY-MM.",
+  "policies": [
+    { "label": "Bergen Area Policy", "href": "https://docs.google.com/document/d/1ZpJguHOU1Bgut1FB0dr9fwecuasg0xjBIp3ZRBM7bQM" },
+    { "label": "Hospitals & Institutions Policy", "href": "https://docs.google.com/document/d/1j2Pw0YCDFh4Zintbcd_TyFDzL0NT96QgBJkYu--tDTM" },
+    { "label": "Fellowship Development Policy", "href": "https://docs.google.com/document/d/19hflq_pz6nkMRgir6W-scu3bbX8tlYk1MejVNX3EycY" },
+    { "label": "Activities Policy", "href": "https://docs.google.com/document/d/1MAVpfyl1bN-N8c129j7bB41lVy68-US9_NLnhl6d164" },
+    { "label": "Public Relations Policy", "href": "https://docs.google.com/document/d/1bATAtzJh2Y5WQo7BfB42HPVBg_6ZLIOdJoJd_L6SMUs" },
+    { "label": "Convention Policy", "href": "https://docs.google.com/document/d/18h9jTzXKQ3KxSCT6rvmOihO9tVMJcRGM70GiWUr8BGA" }
+  ],
+  "files": [
+    { "file": "newmotionformFILL.pdf", "old_url": "https://bergenarea.org/wp-content/uploads/2023/09/newmotionformFILL.pdf" },
+    { "file": "OrderForm2026.pdf", "old_url": "https://bergenarea.org/wp-content/uploads/2026/05/OrderForm2026.pdf" },
+    { "file": "OrderForm2026.xlsx", "old_url": "https://bergenarea.org/wp-content/uploads/2026/05/OrderForm2026.xlsx" },
+    { "file": "BASC_GSR_REPORT_FORMFILL.pdf", "old_url": "https://bergenarea.org/wp-content/uploads/2023/01/BASC_GSR_REPORT_FORMFILL.pdf" },
+    { "file": "subcommitteereportFILL.pdf", "old_url": "https://bergenarea.org/wp-content/uploads/2023/01/subcommitteereportFILL.pdf" },
+    { "file": "Background-Check-Form-2019.pdf", "old_url": "https://bergenarea.org/wp-content/uploads/2019/02/Background-Check-Form-2019.pdf" },
+    { "file": "NALogo.gif", "old_url": "https://bergenarea.org/wp-content/uploads/2019/01/NALogo.gif" },
+    { "file": "NASymbol.gif", "old_url": "https://bergenarea.org/wp-content/uploads/2019/01/NASymbol.gif" },
+    { "file": "NALogoSunburst.gif", "old_url": "https://bergenarea.org/wp-content/uploads/2019/01/NALogoSunburst.gif" }
+  ]
+}

@@ -1,0 +1,28 @@
+---
+/* Meetings: the full finder. Built from the meeting database at build time, refreshed quietly in the browser. */
+import '../../styles/meetings.css';
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import MeetingFinder from '../../components/site/MeetingFinder';
+import { meetingsPage } from '../../content/pages';
+import { deck } from '../../content/deck';
+import { route } from '../../lib/href';
+import { loadMeetings } from '../../lib/load';
+
+const buildNow = new Date();
+const data = await loadMeetings();
+const links = { contact: route('contact'), printable: route('printable'), seventh: route('seventh') };
+---
+<Site title="Meetings | Bergen Area of Narcotics Anonymous" description={deck.meetings.countSentence(data.counts.groups, data.counts.meetings)} crumbs={[{ name: 'Meetings', path: 'meetings/' }]}>
+  <PageHead h1={meetingsPage.h1} scene="chairs" seed={23}>
+    <p class="mf-towns">{deck.meetings.townsSentence(data.towns)}</p>
+  </PageHead>
+
+  <section class="d1-band grain mf-band">
+    <div class="wrap">
+      <div class="d1-today__card mf-card">
+        <MeetingFinder client:load meetings={data.meetings} buildNow={buildNow.getTime()} links={links} />
+      </div>
+    </div>
+  </section>
+</Site>

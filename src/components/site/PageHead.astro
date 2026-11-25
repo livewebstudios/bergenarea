@@ -1,0 +1,24 @@
+---
+/* The top of every inner page: sand band, the page's H1, an ink drawing on a white mat.
+   A short dotted trail runs from the title toward the drawing, a nod to the home page path. */
+import { Scene } from '../shared/Scene';
+import { Dotted } from '../shared/Rough';
+import type { Slot } from '../../lib/ink/slots';
+interface Props { h1: string; lead?: string; scene?: Slot; seed?: number }
+const { h1, lead, scene, seed = 7 } = Astro.props;
+---
+<section class={`pg-head grain${scene ? '' : ' pg-head--plain'}`}>
+  <div class="wrap pg-head__in">
+    <div class="pg-head__text">
+      <h1 class="d1-display pg-head__title">{h1}</h1>
+      {lead && <p class="pg-head__lead"><strong>{lead}</strong></p>}
+      <slot />
+    </div>
+    {scene && (
+      <div class="pg-head__art">
+        <Dotted className="pg-head__trail" viewBox="0 0 160 60" seed={seed} points={[[2, 52], [50, 40], [100, 46], [158, 12]]} preserve="xMinYMid meet" />
+        <Scene slot={scene} eager />
+      </div>
+    )}
+  </div>
+</section>

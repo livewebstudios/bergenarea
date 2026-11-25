@@ -1,0 +1,96 @@
+---
+/* Area Service. Old text word for word, reorganized so documents are easy to find. */
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import Rich from '../../components/site/Rich.astro';
+import WhenBlock from '../../components/site/WhenBlock.astro';
+import { Icon } from '../../components/shared/icons/Icon';
+import { servicePage as s } from '../../content/pages';
+import { ui } from '../../content/deck';
+import documents from '../../data/documents.json';
+import subcommittees from '../../data/subcommittees.json';
+import areaFile from '../../../content/meetings-area.json';
+import { areaMeetings, type AreaMeetingsFile } from '../../lib/upcoming';
+import { resolveLink } from '../../lib/links';
+import { href } from '../../lib/href';
+
+const now = new Date();
+const area = areaFile as AreaMeetingsFile;
+const dates = areaMeetings({ recurring: area.recurring, extra: area.extra.filter((e) => !e.sample) }, now, 4);
+---
+<Site title="Area Service | Bergen Area of Narcotics Anonymous" description="The NA World Services Office defines an Area Service Committee (ASC) meeting as “the primary means by which the services of a local NA community are administered”." crumbs={[{ name: 'Area Service', path: 'service/' }]}>
+  <PageHead h1={s.h1} scene="table" seed={11} />
+
+  <section class="d1-band grain">
+    <div class="wrap pg-split">
+      <div class="pg-prose">
+        <h2 class="d1-display pg-h2">{s.what.h2}</h2>
+        {s.what.body.map((p) => <Rich parts={p} />)}
+        <p class="pg-address"><strong>{s.what.place}</strong><br /><strong>{s.what.address}</strong></p>
+      </div>
+      <WhenBlock dates={dates} limit={1} />
+    </div>
+  </section>
+
+  <section class="d1-band d1-band--sand grain" id="policy">
+    <div class="wrap">
+      <div class="pg-prose">
+        <h2 class="d1-display pg-h2">{s.policy.h2}</h2>
+        {s.policy.body.map((p) => <Rich parts={p} />)}
+      </div>
+      <ul class="pg-docs">
+        {documents.policies.map((d, i) => (
+          <li><a class={`pg-doc pg-doc--${['mint', 'tan', 'sky'][i % 3]}`} href={d.href} target="_blank" rel="noopener noreferrer"><Icon name="clipboard" size={48} /><span>{d.label}</span><Icon name="arrow" /></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="d1-band grain" id="forms">
+    <div class="wrap pg-split pg-split--even">
+      <div class="pg-prose">
+        <h2 class="d1-display pg-h2">{s.forms.h2}</h2>
+        {s.forms.body.map((p) => <Rich parts={p} class="pg-form-line" />)}
+      </div>
+      <div class="pg-card pg-prose">
+        <p>{s.forms.logosIntro}</p>
+        <ul class="pg-linklist">
+          {s.forms.logos.map((l) => {
+            const link = resolveLink(l.a);
+            return <li><a href={link.url} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>{l.t}<Icon name="arrow" /></a></li>;
+          })}
+        </ul>
+        <p class="pg-small">{s.forms.fipt}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="d1-band d1-band--sand grain">
+    <div class="wrap pg-split pg-split--even">
+      <div class="pg-card pg-prose">
+        <h2 class="d1-display pg-h2">{s.gsr.h2}</h2>
+        <p>{s.gsr.intro}</p>
+        <ul class="pg-bullets">{s.gsr.list.map((li) => <li>{li}</li>)}</ul>
+      </div>
+      <div class="pg-card pg-prose">
+        <h2 class="d1-display pg-h2">{s.workshop.h2}</h2>
+        {s.workshop.body.map((p) => <Rich parts={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="d1-band grain">
+    <div class="wrap">
+      <ul class="pg-committees">
+        {subcommittees.committees.map((c) => (
+          <li><a class="d1-btn d1-btn--wide" href={href(`service/${c.slug}/`)}><span>{c.nav}</span><Icon name="arrow" /></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Site>
+
+<script>
+  import { watchUpcoming } from '../../lib/upcoming-client';
+  watchUpcoming();
+</script>

@@ -1,0 +1,15 @@
+---
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import Rich from '../../components/site/Rich.astro';
+import { seventhPage as p } from '../../content/pages';
+---
+<Site title="7th Tradition Donation Information | Bergen Area of Narcotics Anonymous" description="Our seventh tradition states that every NA group should be fully self-supporting, declining outside contributions." crumbs={[{ name: p.h1, path: '7th-tradition-donation-information/' }]}>
+  <PageHead h1={p.h1} scene="keytag" seed={47} />
+  <section class="d1-band grain">
+    <div class="wrap pg-prose">
+      {p.body.map((part) => <Rich parts={part} />)}
+      <p class="pg-chat"><strong>{p.chat}</strong></p>
+    </div>
+  </section>
+</Site>

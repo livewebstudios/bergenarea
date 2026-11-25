@@ -1,0 +1,21 @@
+/* Admin pages: the hub, the refusal message and the guides. Plain and calm. */
+:root { --paper: #FFFAF5; --sand: #FBF5E9; --ink: #1C1A17; --muted: #5B5750; --teal: #155D5A; --mint: #E7F2EC; --pill: #6FD0BD; }
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 1.0625rem/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+main { width: min(100% - 2rem, 42rem); margin: 0 auto; padding: 3rem 0 4rem; }
+h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 0.5rem; }
+h2 { font-size: 1.25rem; margin: 2rem 0 0.5rem; }
+p, ul, ol { margin: 0 0 1rem; }
+a { color: var(--teal); text-underline-offset: 0.18em; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+.muted { color: var(--muted); }
+.editors { list-style: none; padding: 0; display: grid; gap: 0.75rem; }
+.editors a { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 3.25rem; padding: 0.75rem 1.25rem; border: 1.5px solid var(--ink); border-radius: 14px; background: #fff; color: var(--ink); text-decoration: none; font-weight: 600; }
+.editors a:hover { background: var(--mint); }
+.editors small { font-weight: 400; color: var(--muted); }
+.btn { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0.5rem 1.25rem; border: 1.5px solid var(--ink); border-radius: 999px; background: var(--pill); color: var(--ink); font: 600 1rem/1.2 inherit; cursor: pointer; text-decoration: none; }
+.btn--quiet { background: #fff; }
+.row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+.gate-msg { width: min(100% - 2rem, 34rem); margin: 4rem auto; padding: 1.5rem; background: #fff; border: 1.5px solid var(--ink); border-radius: 14px; }
+.example { background: var(--sand); border-radius: 10px; padding: 0.75rem 1rem; }
+code { background: var(--sand); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.95em; }

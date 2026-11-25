@@ -7,27 +7,30 @@ interface Props {
   title: string;
   description: string;
   bodyClass?: string;
+  crumbs?: { name: string; path: string }[];
 }
-const { title, description, bodyClass = '' } = Astro.props;
+const { title, description, bodyClass = '', crumbs = [] } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(href('img/og.png'), Astro.site).href;
-const jsonLd = [
-  {
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Bergen Area of Narcotics Anonymous',
+  url: 'https://bergenarea.org/',
+  email: 'info@bergenarea.org',
+  telephone: '+1-800-992-0401',
+  areaServed: 'Bergen County, NJ',
+};
+const jsonLd: object[] = [org, { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Bergen Area of Narcotics Anonymous', url: 'https://bergenarea.org/' }];
+if (crumbs.length) {
+  jsonLd.push({
     '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'Bergen Area of Narcotics Anonymous',
-    url: 'https://bergenarea.org/',
-    email: 'info@bergenarea.org',
-    telephone: '+1-800-992-0401',
-    areaServed: 'Bergen County, NJ',
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'Bergen Area of Narcotics Anonymous',
-    url: 'https://bergenarea.org/',
-  },
-];
+    '@type': 'BreadcrumbList',
+    itemListElement: [{ name: 'Home', path: '' }, ...crumbs].map((c, i) => ({
+      '@type': 'ListItem', position: i + 1, name: c.name, item: new URL(href(c.path), Astro.site).href,
+    })),
+  });
+}
 ---
 <!doctype html>
 <html lang="en">
@@ -36,13 +39,11 @@ const jsonLd = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <!-- CANONICAL: preview build. Confirm https://bergenarea.org/ paths before go-live. -->
     <link rel="canonical" href={canonical} />
     <!-- REVIEW GATE: every route is noindex until launch. -->
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" href={href('favicon.svg')} type="image/svg+xml" />
 
-    <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
@@ -51,8 +52,9 @@ const jsonLd = [
 
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
 
-    <!-- GA4 placeholder -->
-    <!-- GA4: replace G-XXXXXXXXXX -->
+    <!-- GA4: add the tag here at launch (G-XXXXXXXXXX). -->
+    <!-- Netlify Identity invite and password emails link to the site root. Send those links on to the editor hub. -->
+    <script is:inline>if (/(invite|recovery|confirmation|email_change)_token=/.test(location.hash)) location.replace('/admin/' + location.hash);</script>
     <slot name="head" />
   </head>
   <body class={bodyClass}>

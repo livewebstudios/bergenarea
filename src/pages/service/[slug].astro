@@ -1,0 +1,87 @@
+---
+/* One page per subcommittee, all from src/data/subcommittees.json. */
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import Rich, { type Part } from '../../components/site/Rich.astro';
+import WhenBlock from '../../components/site/WhenBlock.astro';
+import EventList from '../../components/site/EventList.astro';
+import { Icon, type IconName } from '../../components/shared/icons/Icon';
+import { ui } from '../../content/deck';
+import data from '../../data/subcommittees.json';
+import { nextDates, type MeetRule } from '../../lib/committees';
+import { policyUrl, resolveLink } from '../../lib/links';
+import { href, route } from '../../lib/href';
+import { loadEvents } from '../../lib/events';
+import type { Slot } from '../../lib/ink/slots';
+
+export function getStaticPaths() {
+  return data.committees.map((c) => ({ params: { slug: c.slug }, props: { c } }));
+}
+
+type Committee = (typeof data.committees)[number] & {
+  lead?: string;
+  body?: Part[][];
+  sections?: { h2: string; body?: Part[][]; buttons?: { label: string; route?: string; href?: string; icon: string }[]; steps?: string[] }[];
+  policy?: string;
+  events?: 'convention' | 'activities';
+};
+const { c } = Astro.props as { c: Committee };
+const now = new Date();
+const rules = c.meets as MeetRule[];
+const dates = nextDates(rules, now, 6).map(({ title, ...d }) => ({ ...d, title: rules.length > 1 ? d.rule.label : '' }));
+const policy = c.policy ? policyUrl(c.policy) : undefined;
+const events = c.events ? loadEvents(now)[c.events] : undefined;
+const description = (c.body?.[0] ?? c.sections?.[0]?.body?.[0] ?? []).map((p) => (typeof p === 'string' ? p : p.t)).join('').slice(0, 155);
+const contactUrl = `${route('contact')}?to=${encodeURIComponent(c.mailbox)}#form`;
+---
+<Site title={`${c.nav} | Bergen Area of Narcotics Anonymous`} description={description} crumbs={[{ name: 'Area Service', path: 'service/' }, { name: c.nav, path: `service/${c.slug}/` }]}>
+  <PageHead h1={c.h1} lead={c.lead} scene={c.scene as Slot} seed={c.slug.length * 7} />
+
+  <section class="d1-band grain">
+    <div class={`wrap ${rules.length ? 'pg-split' : ''}`}>
+      <div class="pg-prose">
+        {c.body?.map((p) => <Rich parts={p} />)}
+        {c.sections?.map((sec) => (
+          <div class="pg-section">
+            <h2 class="d1-display pg-h2">{sec.h2}</h2>
+            {sec.body?.map((p) => <Rich parts={p} />)}
+            {sec.buttons && (
+              <ul class="pg-iconbtns">
+                {sec.buttons.map((b) => {
+                  const url = b.route ? route(b.route as never) : b.href!;
+                  const ext = !b.route;
+                  return <li><a class="d1-btn d1-btn--white" href={url} target={ext ? '_blank' : undefined} rel={ext ? 'noopener noreferrer' : undefined}><Icon name={b.icon as IconName} />{b.label}</a></li>;
+                })}
+              </ul>
+            )}
+            {sec.steps && (
+              <ol class="pg-steps">
+                {sec.steps.map((step, i) => <li><span class="pg-steps__dot" aria-hidden="true">{i + 1}</span>{step}</li>)}
+              </ol>
+            )}
+          </div>
+        ))}
+        <p class="pg-actions">
+          {policy && <a class="d1-btn" href={policy} target="_blank" rel="noopener noreferrer"><Icon name="clipboard" />{c.policy}</a>}
+          <a class="d1-btn d1-btn--white" href={contactUrl}><Icon name="phone" />{c.mailbox}</a>
+        </p>
+      </div>
+      {rules.length > 0 && <WhenBlock dates={dates} rules={rules} limit={rules.length > 1 ? 2 : 1} />}
+    </div>
+  </section>
+
+  {events && (
+    <section class="d1-band d1-band--sand grain">
+      <div class="wrap">
+        <h2 class="d1-display pg-h2 pg-center">{c.events === 'convention' ? ui.convention : ui.activities}</h2>
+        <EventList items={events.upcoming} limit={6} />
+        <p class="pg-center pg-more"><a class="d1-btn d1-btn--lg" href={`${route('events')}#${c.events}`}>{ui.allEvents}<Icon name="arrow" /></a></p>
+      </div>
+    </section>
+  )}
+</Site>
+
+<script>
+  import { watchUpcoming } from '../../lib/upcoming-client';
+  watchUpcoming();
+</script>

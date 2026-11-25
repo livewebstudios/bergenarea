@@ -1,3 +1,7 @@
+# notes and local QA tooling stay on this machine, never in the repo
+*.md
+_dev/
+
 # build
 node_modules/
 dist/

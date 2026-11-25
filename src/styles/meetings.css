@@ -1,0 +1,99 @@
+/* Meetings pages: the full finder, the printable list, Group Start Dates.
+   Builds on the home finder's d1-* pieces in site.css; only what is new lives here. */
+
+/* /meetings/ */
+.mf-towns { max-width: 40rem; font-size: 1.0625rem; color: var(--muted); }
+.mf-band { --ground: var(--sand); }
+.mf-card { padding-top: clamp(1.25rem, 0.5rem + 2vw, 2rem); }
+.mf-views { display: flex; flex-wrap: wrap; gap: 0.4rem; padding-bottom: var(--space-4); border-bottom: 1.5px solid var(--tan); }
+.mf .mf-view[aria-pressed="true"] { background: var(--ink); color: var(--paper); box-shadow: none; }
+.mf .mf-view[aria-pressed="true"] .icon { color: var(--pill); }
+.mf-filters { margin-top: var(--space-4); }
+.mf-search { flex: 1 1 14rem; display: flex; min-width: 0; }
+.mf-search input {
+  width: 100%; min-height: var(--tap); padding: 0 1.1rem; border: 0; border-radius: var(--radius-pill); background: var(--sand);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 50%, transparent); font-weight: 600;
+}
+.mf-search input::placeholder { color: var(--muted); font-weight: 400; }
+.mf-head { margin-block: var(--space-3) var(--space-5); }
+@media (min-width: 62rem) { .mf-head { padding-right: 0; } }
+.mf-row__day { display: block; font-family: var(--font-body); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rust); }
+.mf-wc, .mf-saved {
+  display: inline-flex; align-items: center; min-height: 1.5rem; padding: 0 0.5rem; border-radius: var(--radius-pill);
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em;
+}
+.mf-wc { border: 1.5px solid var(--ink); }
+.mf-saved { background: var(--sky); }
+.mf-groups { display: grid; gap: var(--space-6); margin-top: var(--space-5); }
+.mf-group__title { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); margin-bottom: var(--space-3); }
+.mf-note { margin-block: var(--space-4); padding: var(--space-4); background: var(--butter); border-radius: var(--radius-card); }
+.mf-after { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-4); margin-top: var(--space-5); }
+.mf-report { font-weight: 600; }
+.mf-report a { color: var(--teal); }
+
+/* the map */
+.mf-map {
+  position: relative; isolation: isolate; z-index: 0; height: clamp(22rem, 60vh, 38rem); margin-top: var(--space-5);
+  border-radius: var(--radius-card); overflow: hidden; background: var(--sand); box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+.mf-map .leaflet-container { font-family: var(--font-body); }
+.mf-pin { background: none; border: 0; }
+.mf-pin svg { display: block; overflow: visible; }
+.mf-pin:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; border-radius: 6px; }
+.mf-popup { display: grid; gap: 0.25rem; min-width: 14rem; }
+.mf-popup__place { font-weight: 600; margin: 0 0 0.25rem; }
+.mf-popup__item {
+  min-height: var(--tap); padding: 0.4rem 0.6rem; border: 0; border-radius: 8px; background: var(--sand);
+  font: 600 0.875rem/1.3 var(--font-body); text-align: left; color: var(--ink);
+}
+.mf-popup__item:hover { background: var(--mint); }
+
+/* Group Start Dates */
+.gsd { display: grid; gap: var(--space-6); }
+@media (min-width: 52rem) { .gsd { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6) var(--space-8); } }
+.gsd-day { padding: var(--space-5); background: var(--white); border-radius: var(--radius-card); }
+.gsd-day__name { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); margin-bottom: var(--space-3); }
+.gsd-list li { padding-block: 0.55rem; border-top: 1.5px solid var(--tan); }
+
+/* Printable list: on screen a white sheet on sand, on paper just the list */
+.pr-band { --ground: var(--sand); }
+.pr-sheet { padding: clamp(1.25rem, 0.5rem + 3vw, 3rem); background: var(--white); border-radius: var(--radius-card); max-width: 60rem; }
+.pr-head { display: grid; gap: var(--space-4); align-items: center; padding-bottom: var(--space-5); border-bottom: 2px solid var(--ink); }
+@media (min-width: 48rem) { .pr-head { grid-template-columns: auto 1fr auto; } }
+.pr-logo { width: 12rem; }
+.pr-title { font-size: clamp(2rem, 1.5rem + 2vw, 3rem); }
+.pr-meta { color: var(--muted); font-size: 0.9375rem; }
+.pr-day { margin-top: var(--space-5); break-inside: auto; }
+.pr-day__name { font-size: 1.75rem; padding-bottom: 0.25rem; border-bottom: 1.5px solid var(--tan); break-after: avoid; }
+.pr-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.pr-table td { padding: 0.45rem 0.5rem 0.45rem 0; vertical-align: top; border-bottom: 1px solid var(--tan); }
+.pr-table tr { break-inside: avoid; }
+.pr-time { width: 9.5rem; white-space: nowrap; font-weight: 600; }
+.pr-place { color: var(--muted); }
+.pr-formats { width: 9rem; text-align: right; font-size: 0.8125rem; color: var(--muted); }
+.pr-legend { margin-top: var(--space-6); break-inside: avoid; }
+.pr-legend__title { font: 600 0.8125rem/1 var(--font-body); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: var(--space-3); }
+.pr-legend dl { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 0.2rem var(--space-5); font-size: 0.875rem; }
+.pr-legend dl div { display: flex; gap: 0.5rem; }
+.pr-legend dt { font-weight: 600; min-width: 2.5rem; }
+.pr-count { margin-top: var(--space-5); color: var(--muted); font-size: 0.875rem; }
+
+@media print {
+  @page { size: letter; margin: 0.5in; }
+  .mf-print-page .d1-helpline, .mf-print-page .d1-nav, .mf-print-page .d1-footer, .mf-print-page .skip-link,
+  .mf-print-page .pr-actions, .mf-print-page .dialog-backdrop { display: none !important; }
+  .mf-print-page, .mf-print-page .grain { background: #fff !important; }
+  .mf-print-page .grain::before { display: none; }
+  .pr-band { padding: 0 !important; }
+  .pr-sheet { width: 100%; max-width: none; padding: 0; border-radius: 0; }
+  .pr-head { grid-template-columns: auto 1fr; }
+  .pr-logo { width: 9rem; }
+  .pr-title { font-size: 22pt; }
+  .pr-table { font-size: 9pt; }
+  .pr-day__name { font-size: 14pt; }
+  .pr-legend dl { font-size: 8pt; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mf-map .leaflet-zoom-anim .leaflet-zoom-animated { transition: none !important; }
+}

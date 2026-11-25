@@ -1,0 +1,25 @@
+---
+/* Not in the menu (full-site spec decision D7: carry the 2023 page as is, out of the nav). */
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import Rich from '../../components/site/Rich.astro';
+import { Icon } from '../../components/shared/icons/Icon';
+import { carPage as p } from '../../content/pages';
+---
+<Site title="CAR Report | Bergen Area of Narcotics Anonymous" description="CAR stands for the CONFERENCE AGENDA REPORT. It is a compilation of motions that have been brought before Narcotics Anonymous at the world level." crumbs={[{ name: 'CAR Report', path: 'car-report/' }]}>
+  <PageHead h1={p.h1} scene="table" seed={53}>
+    <p class="pg-head__intro"><strong>{p.h2}</strong></p>
+    <p><a class="d1-btn" href={p.download.a} target="_blank" rel="noopener noreferrer">{p.download.t}<Icon name="arrow" /></a></p>
+  </PageHead>
+  <section class="d1-band grain">
+    <div class="wrap pg-prose">
+      {p.sections.map((sec) => (
+        <div class="pg-section">
+          <h2 class="pg-h3">{sec.h}</h2>
+          {sec.body.map((part) => <Rich parts={part} />)}
+        </div>
+      ))}
+      <blockquote class="pg-quote">{p.quote.map((part) => <Rich parts={part} />)}</blockquote>
+    </div>
+  </section>
+</Site>

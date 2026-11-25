@@ -1,0 +1,16 @@
+---
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import Cleantime from '../../components/site/Cleantime';
+import { cleantimePage as p } from '../../content/pages';
+---
+<Site title="Cleantime Calculator | Bergen Area of Narcotics Anonymous" description="NA Cleantime Calculator. Enter your clean date to see your clean time in years, months and days." crumbs={[{ name: p.h1, path: 'cleantime/' }]}>
+  <PageHead h1={p.h1} scene="keytag" seed={37} />
+  <section class="d1-band grain">
+    <div class="wrap">
+      <div class="pg-card ct-card">
+        <Cleantime client:visible title={p.widget} prompt={p.prompt} />
+      </div>
+    </div>
+  </section>
+</Site>

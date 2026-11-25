@@ -1,4 +1,4 @@
-// The notice popup: shared logic, three skins (one per demo).
+// The notice popup the webmaster controls (/admin/notice/).
 // Reads content/notice.json. Shows only when enabled, today is inside start..end in New York,
 // and scope matches. Opens 800ms after load so it never blocks first paint.
 // "once" is remembered per id in localStorage. If storage is blocked it shows each visit.
@@ -33,13 +33,7 @@ export function NoticeCore({ notice, page = 'home', className, backdropClassName
     if (noticeActive(notice, new Date(), page) && !(notice.frequency === 'once' && seen(notice.id))) {
       timer = window.setTimeout(() => setOpen(true), 800);
     }
-    // DEMO SCAFFOLDING: the switcher's NOTICE button replays the popup regardless of memory.
-    const replay = () => setOpen(true);
-    window.addEventListener('ba:notice-replay', replay);
-    return () => {
-      window.clearTimeout(timer);
-      window.removeEventListener('ba:notice-replay', replay);
-    };
+    return () => window.clearTimeout(timer);
   }, [notice, page]);
 
   const close = useCallback(() => {

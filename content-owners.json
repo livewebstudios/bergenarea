@@ -1,0 +1,10 @@
+{
+  "_readme": "Which Decap login may change which content file. scripts/check-owners.mjs fails the build if a file was last changed by a different role mailbox. The webmaster may change any of them. Commits from any other address (the developer) always pass.",
+  "webmaster": "website@bergenarea.org",
+  "files": {
+    "content/events-convention.json": "convention@bergenarea.org",
+    "content/events-activities.json": "activities@bergenarea.org",
+    "content/meetings-area.json": "chairperson@bergenarea.org",
+    "content/notice.json": "website@bergenarea.org"
+  }
+}

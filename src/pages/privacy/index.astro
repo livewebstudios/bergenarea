@@ -1,0 +1,22 @@
+---
+/* New page, no old-site text (full-site spec section 2). Plain words. Update it when GA4 goes in. */
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import { route } from '../../lib/href';
+---
+<Site title="Privacy | Bergen Area of Narcotics Anonymous" description="What this site keeps, and what it doesn't." crumbs={[{ name: 'Privacy', path: 'privacy/' }]}>
+  <PageHead h1="PRIVACY" />
+  <section class="d1-band grain">
+    <div class="wrap pg-prose">
+      <p>Anonymity matters here. This site asks for as little as it can.</p>
+      <h2 class="pg-h3">The contact form</h2>
+      <p>What you type goes to the Bergen Area by email through Formspree, a form service. It is used to answer you and nothing else. It is never sold or shared.</p>
+      <h2 class="pg-h3">Finding meetings near you</h2>
+      <p>The meeting finder only asks for your location when you tap Near me. It is used in your browser to sort meetings by distance. It is never sent to us or saved.</p>
+      <h2 class="pg-h3">Saved in your browser</h2>
+      <p>Meetings you mark as favorites, and whether you closed the announcement popup, are kept in your own browser. We never see them. Clearing your browser data removes them.</p>
+      <h2 class="pg-h3">Questions</h2>
+      <p>Write to us through the <a href={route('contact')}>contact page</a>.</p>
+    </div>
+  </section>
+</Site>

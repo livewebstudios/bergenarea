@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Site Admin: Bergen Area</title>
+  <link rel="stylesheet" href="admin.css" />
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Site Admin: Bergen Area</h1>
+    <p class="muted" id="hub-status">Log in to see the editors this login can open.</p>
+    <p class="row" id="hub-login"><button type="button" class="btn" id="login">Log in</button></p>
+
+    <ul class="editors" id="editors" hidden>
+      <li data-role="convention"><a href="convention/">Convention events <small>Convention committee</small></a></li>
+      <li data-role="activities"><a href="activities/">Activities events <small>Activities subcommittee</small></a></li>
+      <li data-role="area"><a href="area/">Upcoming meetings <small>Area Service, JAC, budget</small></a></li>
+      <li data-role="notice"><a href="notice/">Home page popup <small>Webmaster</small></a></li>
+    </ul>
+    <p class="muted" id="hub-none" hidden>This login has no editors yet. Ask the webmaster to set a role on it.</p>
+    <p class="row" id="hub-logout" hidden><button type="button" class="btn btn--quiet" id="logout">Log out</button></p>
+  </main>
+
+  <script>
+    (function () {
+      // Which role opens which editor. "webmaster" opens all four.
+      var NEEDS = { convention: 'convention', activities: 'activities', area: 'area', notice: 'webmaster' };
+      var host = window.location.hostname;
+      var local = host === 'localhost' || host === '127.0.0.1' || host === '[::1]' || host.endsWith('.localhost');
+      var list = document.getElementById('editors');
+      var items = Array.prototype.slice.call(list.querySelectorAll('li'));
+
+      function show(roles, everything) {
+        var shown = 0;
+        items.forEach(function (li) {
+          var need = NEEDS[li.getAttribute('data-role')];
+          var ok = everything || roles.indexOf('webmaster') !== -1 || roles.indexOf(need) !== -1;
+          li.hidden = !ok;
+          if (ok) shown++;
+        });
+        list.hidden = shown === 0;
+        document.getElementById('hub-none').hidden = shown > 0;
+        document.getElementById('hub-login').hidden = true;
+        document.getElementById('hub-status').textContent = 'Pick an editor.';
+      }
+      function signedOut() {
+        list.hidden = true;
+        document.getElementById('hub-none').hidden = true;
+        document.getElementById('hub-logout').hidden = true;
+        document.getElementById('hub-login').hidden = false;
+        document.getElementById('hub-status').textContent = 'Log in to see the editors this login can open.';
+      }
+
+      if (local) {
+        // Testing on this computer with Decap's local backend: no logins, every editor.
+        show([], true);
+        document.getElementById('hub-status').textContent = 'Local testing: every editor is open.';
+        document.getElementById('hub-login').hidden = true;
+        return;
+      }
+
+      var id = window.netlifyIdentity;
+      document.getElementById('login').addEventListener('click', function () { id && id.open('login'); });
+      document.getElementById('logout').addEventListener('click', function () { id && id.logout(); });
+      if (!id) return;
+      function signedIn(user) {
+        show((user.app_metadata && user.app_metadata.roles) || [], false);
+        document.getElementById('hub-logout').hidden = false;
+      }
+      id.on('init', function (user) { if (user) signedIn(user); else signedOut(); });
+      id.on('login', function (user) { id.close(); signedIn(user); });
+      id.on('logout', signedOut);
+    })();
+  </script>
+</body>
+</html>

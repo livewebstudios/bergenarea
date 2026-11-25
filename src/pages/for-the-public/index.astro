@@ -1,0 +1,42 @@
+---
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import Rich from '../../components/site/Rich.astro';
+import { Icon } from '../../components/shared/icons/Icon';
+import { publicPage as p } from '../../content/pages';
+---
+<Site title="For the Public | Bergen Area of Narcotics Anonymous" description="Contains links to items of interest to the general public and professionals about the Fellowship of Narcotics Anonymous" crumbs={[{ name: 'For the Public', path: 'for-the-public/' }]}>
+  <PageHead h1={p.h1} scene="road-horizon" seed={23} />
+
+  <section class="d1-band grain">
+    <div class="wrap">
+      <h2 class="d1-display pg-h2 pg-center">{p.helpful.h2}</h2>
+      <ul class="pg-docs pg-docs--links">
+        {p.helpful.links.map((l, i) => (
+          <li>
+            <a class={`pg-doc pg-doc--${['mint', 'tan', 'sky'][i % 3]}`} href={l.href} target="_blank" rel="noopener noreferrer">
+              <span class="pg-doc__text"><strong>{l.label}</strong><span class="pg-doc__url">{l.text}</span></span>
+              <Icon name="arrow" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="d1-band d1-band--sand grain">
+    <div class="wrap pg-split pg-split--even">
+      <div class="pg-prose">
+        <h2 class="d1-display pg-h2">{p.pr.h2}</h2>
+        <h3 class="pg-h3">{p.pr.h3}</h3>
+        <p>{p.pr.intro}</p>
+        <Rich parts={p.pr.contact} />
+      </div>
+      <div class="pg-card">
+        <ul class="pg-linklist">
+          {p.pr.links.map((l) => <li><a href={l.a} target="_blank" rel="noopener noreferrer">{l.t}<Icon name="arrow" /></a></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+</Site>

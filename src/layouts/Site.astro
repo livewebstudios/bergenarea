@@ -1,0 +1,96 @@
+---
+/* Every page: helpline, sticky header, footer, the webmaster's popup.
+   Open Road look: warm paper, pen-and-ink drawings, mint pill buttons. */
+import '@fontsource/instrument-serif/latin-400.css';
+import '@fontsource/public-sans/latin-400.css';
+import '@fontsource/public-sans/latin-600.css';
+import '@fontsource/patrick-hand/latin-400.css';
+import '../styles/site.css';
+import '../styles/pages.css';
+import Base from './Base.astro';
+import HelplineBar from '../components/shared/HelplineBar.astro';
+import { Icon } from '../components/shared/icons/Icon';
+import Notice1 from '../components/site/Notice';
+import { deck, ui } from '../content/deck';
+import { href, route } from '../lib/href';
+import { NAV, FOOTER_NAV, isCurrent } from '../lib/nav';
+import noticeFile from '../../content/notice.json';
+import type { Notice } from '../lib/upcoming';
+
+interface Props {
+  title: string;
+  description: string;
+  /** the home page has its own anchor target for the skip link */
+  home?: boolean;
+  /** inner pages: their trail for BreadcrumbList schema */
+  crumbs?: { name: string; path: string }[];
+  bodyClass?: string;
+}
+const { title, description, home = false, crumbs = [], bodyClass = '' } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+const here = Astro.url.pathname.startsWith(base) ? Astro.url.pathname.slice(base.length) : Astro.url.pathname.replace(/^\//, '');
+const year = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric' }).format(new Date()));
+const h = deck.site.helpline;
+const notice = noticeFile as Notice;
+---
+<Base title={title} description={description} bodyClass={`d1 ${bodyClass}`.trim()} crumbs={crumbs}>
+  <slot name="head" slot="head" />
+  <a class="skip-link" href="#main">{deck.site.headerButton}</a>
+  <HelplineBar class="d1-helpline" />
+
+  <header class="d1-nav" data-nav>
+    <div class="wrap d1-nav__in">
+      <a class="d1-nav__logo" href={route('home')} aria-current={home ? 'page' : undefined}><img src={href('img/logo.png')} alt={deck.site.logoAlt} width="200" height="43" /></a>
+      <button type="button" class="d1-nav__menu" data-nav-toggle aria-expanded="false" aria-controls="site-menu"><Icon name="menu" /><span>{ui.menu}</span></button>
+      <nav id="site-menu" class="d1-nav__links" aria-label={ui.menu}>
+        <ul>
+          {NAV.map((item) => (
+            <li class={isCurrent(item, here) ? 'is-current' : undefined}>
+              {item.children ? (
+                <>
+                  <button type="button" data-sub-toggle aria-expanded="false">{item.label}</button>
+                  <ul class="d1-nav__sub">
+                    {item.children.map((child) => <li><a href={href(child.path)} aria-current={child.path === here ? 'page' : undefined}>{child.label}</a></li>)}
+                  </ul>
+                </>
+              ) : (
+                <a href={href(item.path)} aria-current={item.path === here ? 'page' : undefined}>{item.label}</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <a class="d1-btn d1-nav__cta" href={route('meetings')} data-deck="header-button">{deck.site.headerButton}</a>
+    </div>
+  </header>
+
+  <main id="main" class="d1-main" data-path-root={home ? '' : undefined}>
+    <slot />
+  </main>
+
+  <footer class="d1-footer grain">
+    <div class="wrap d1-footer__in">
+      <div class="d1-footer__brand">
+        <img src={href('img/logo.png')} alt={deck.site.logoAlt} width="200" height="43" loading="lazy" decoding="async" />
+        <p class="d1-footer__help">{h.before}<a href={h.first.href}>{h.first.label}</a><span class="nowrap">{h.between}<a href={h.second.href}>{h.second.label}</a>{h.after}</span></p>
+        <p><a href={`mailto:${deck.site.email}`}>{deck.site.email}</a></p>
+      </div>
+      <nav class="d1-footer__nav" aria-label="BergenArea.org">
+        <ul>
+          {FOOTER_NAV.map((l) => <li><a href={href(l.path)}>{l.label}</a></li>)}
+        </ul>
+      </nav>
+      <div class="d1-footer__meta">
+        <p data-deck="copyright">{deck.site.copyright(year)}</p>
+        <p><a href={route('donations')}>Donations</a> · <a href={route('privacy')}>Privacy</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <Notice1 client:idle notice={notice} page={home ? 'home' : 'other'} />
+</Base>
+
+<script>
+  import { initNav } from '../lib/nav-client';
+  initNav();
+</script>

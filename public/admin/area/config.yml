@@ -1,0 +1,67 @@
+backend:
+  name: git-gateway
+  branch: main
+  commit_messages:
+    create: "Area: add {{path}}"
+    update: "Area: update {{path}}"
+    delete: "Area: delete {{path}}"
+    uploadMedia: "Area: upload {{path}}"
+    deleteMedia: "Area: delete {{path}}"
+
+# Lets the editor run against files on this computer with `npx decap-server`. Ignored on the live site.
+local_backend: true
+
+media_folder: "public/uploads/area"
+public_folder: "/uploads/area"
+
+collections:
+  - name: "area"
+    label: "Upcoming meetings"
+    description: "For the Area (chair or secretary). How to use this editor: open /admin/area/guide.html"
+    editor: {preview: false}
+    files:
+      - name: "meetings"
+        label: "Upcoming meetings"
+        file: "content/meetings-area.json"
+        fields:
+          - label: "Area Service (every month)"
+            name: "recurring"
+            widget: "object"
+            hint: "The site works out the next Area Service date by itself. Only change this if the regular day, time or place changes for good."
+            fields:
+              - {label: "Title", name: "title", widget: "string", hint: "Example: Bergen Area Service"}
+              - {label: "Which week", name: "nth", widget: "select", options: [{label: "1st", value: 1}, {label: "2nd", value: 2}, {label: "3rd", value: 3}, {label: "4th", value: 4}], hint: "Example: 3rd, for the 3rd Tuesday of the month"}
+              - {label: "Day", name: "weekday", widget: "select", options: [{label: "Sunday", value: 0}, {label: "Monday", value: 1}, {label: "Tuesday", value: 2}, {label: "Wednesday", value: 3}, {label: "Thursday", value: 4}, {label: "Friday", value: 5}, {label: "Saturday", value: 6}], hint: "Example: Tuesday"}
+              - {label: "Start time", name: "start_time", widget: "string", pattern: ["^([01][0-9]|2[0-3]):[0-5][0-9]$", "Use 24-hour time, like 19:30"], hint: "24-hour time. Example: 19:30 for 7:30 PM"}
+              - {label: "End time", name: "end_time", widget: "string", pattern: ["^([01][0-9]|2[0-3]):[0-5][0-9]$", "Use 24-hour time, like 22:00"], hint: "24-hour time. Example: 22:00 for 10:00 PM"}
+              - {label: "Place name", name: "location_name", widget: "string", hint: "Example: Westwood United Methodist Church"}
+              - {label: "Address", name: "address", widget: "string", hint: "Example: 105 Fairview Ave, Westwood, NJ 07675"}
+              - label: "Cancel or move one month"
+                name: "exceptions"
+                widget: "list"
+                label_singular: "change"
+                summary: "{{fields.date}} {{fields.status}}"
+                hint: "Use this when one month's Area Service is cancelled or moved. Leave it empty in a normal month."
+                fields:
+                  - {label: "Regular date this applies to", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, picker_utc: false, hint: "The date the meeting would normally fall on. Example: 2026-12-15"}
+                  - {label: "What happens", name: "status", widget: "select", options: [{label: "Cancelled", value: "cancelled"}, {label: "Moved", value: "moved"}], hint: "Cancelled hides that month. Moved shows the new date instead."}
+                  - {label: "New date and time (if moved)", name: "new_start", widget: "datetime", format: "YYYY-MM-DDTHH:mm", date_format: "YYYY-MM-DD", time_format: "HH:mm", picker_utc: false, required: false, default: "", hint: "Only when moved. New Jersey time. Example: 2026-12-22 at 19:30"}
+                  - {label: "Note", name: "note", widget: "string", required: false, hint: "Optional. Example: Moved one week because of the holiday"}
+          - label: "Other meetings (JAC, budget, anything else)"
+            name: "extra"
+            widget: "list"
+            label_singular: "meeting"
+            summary: "{{fields.title}} ({{fields.start}})"
+            add_to_top: true
+            hint: "One-off meetings. Past ones drop off the site by themselves."
+            fields:
+              - {label: "Title", name: "title", widget: "string", hint: "The event name as it should appear. Example: New Year New Life 34"}
+              - {label: "Starts", name: "start", widget: "datetime", format: "YYYY-MM-DDTHH:mm", date_format: "YYYY-MM-DD", time_format: "HH:mm", picker_utc: false, hint: "New Jersey time. Example: 2027-06-12 at 12:00 for noon on June 12, 2027."}
+              - {label: "Ends", name: "end", widget: "datetime", format: "YYYY-MM-DDTHH:mm", date_format: "YYYY-MM-DD", time_format: "HH:mm", picker_utc: false, required: false, default: "", hint: "Optional. New Jersey time. The event drops off the site after this. Example: 2027-06-12 at 16:00."}
+              - {label: "Place name", name: "location_name", widget: "string", required: false, hint: "Optional. Example: Saddle River County Park, Wild Duck Pond area"}
+              - {label: "Address", name: "address", widget: "string", required: false, hint: "Optional. Street, town, state. Example: 105 Fairview Ave, Westwood, NJ 07675"}
+              - {label: "Zoom link", name: "virtual_link", widget: "string", required: false, hint: "Optional. The full join link. Example: https://us02web.zoom.us/j/12345678901"}
+              - {label: "Zoom details", name: "virtual_info", widget: "string", required: false, hint: "Optional. Meeting ID and passcode as people should see them. Example: Meeting ID 123 4567 8901, Passcode 1234"}
+              - {label: "Note", name: "note", widget: "string", required: false, hint: "Optional. One short line. Example: Budget meeting, all GSRs welcome"}
+              - {label: "Link text", name: "link_label", widget: "string", required: false, hint: "Optional. The words on the link. Example: Convention website"}
+              - {label: "Link address", name: "link_url", widget: "string", required: false, hint: "Optional. Example: https://www.newyearnewlife.org/"}

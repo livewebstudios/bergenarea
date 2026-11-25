@@ -1,0 +1,69 @@
+---
+/* Events: three areas, each fed by its own file and its own editor login. */
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import Rich from '../../components/site/Rich.astro';
+import EventList from '../../components/site/EventList.astro';
+import { Scene } from '../../components/shared/Scene';
+import { eventsPage as p } from '../../content/pages';
+import { ui } from '../../content/deck';
+import { loadEvents, type AreaKey } from '../../lib/events';
+import { nyWallToInstant, parseWall } from '../../lib/time';
+
+const now = new Date();
+const ev = loadEvents(now);
+const areas: { key: AreaKey; label: string; tint: string; slot: 'table' | 'fireworks' | 'pavilion' }[] = [
+  { key: 'area', label: ui.upcomingMeetings, tint: 'mint', slot: 'table' },
+  { key: 'convention', label: ui.convention, tint: 'tan', slot: 'fireworks' },
+  { key: 'activities', label: ui.activities, tint: 'sky', slot: 'pavilion' },
+];
+const past = areas.flatMap((a) => ev[a.key].past);
+const iso = (wall: string) => nyWallToInstant(parseWall(wall)).toISOString();
+const schema = areas.flatMap((a) => ev[a.key].upcoming).map((e) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: e.title,
+  startDate: iso(e.start),
+  ...(e.end ? { endDate: iso(e.end) } : {}),
+  eventAttendanceMode: e.virtual_link && !e.address ? 'https://schema.org/OnlineEventAttendanceMode' : 'https://schema.org/OfflineEventAttendanceMode',
+  location: e.address ? { '@type': 'Place', name: e.location_name || e.address, address: e.address } : { '@type': 'VirtualLocation', url: e.virtual_link || 'https://bergenarea.org/events/' },
+  organizer: { '@type': 'Organization', name: 'Bergen Area of Narcotics Anonymous', url: 'https://bergenarea.org/' },
+}));
+---
+<Site title="Events & Announcements | Bergen Area of Narcotics Anonymous" description="Bergen Area Service meetings, the New Year New Life convention, and Bergen Area NA activities." crumbs={[{ name: 'Events', path: 'events/' }]}>
+  <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />
+  <PageHead h1={p.h1} scene="fireworks" seed={19} />
+
+  <section class="d1-band grain">
+    <div class="wrap pg-prose pg-prose--center">
+      <h2 class="d1-display pg-h2">{p.h2}</h2>
+      {p.body.map((part) => <Rich parts={part} />)}
+    </div>
+  </section>
+
+  {areas.map((a, i) => (
+    <section id={a.key} class={`d1-band grain ev-area ev-area--${a.tint}${i % 2 === 0 ? ' d1-band--sand' : ''}`}>
+      <div class="wrap">
+        <div class="ev-area__head">
+          <div class="ev-area__art"><Scene slot={a.slot} /></div>
+          <h2 class="d1-display pg-h2">{a.label}</h2>
+        </div>
+        <EventList items={ev[a.key].upcoming} />
+      </div>
+    </section>
+  ))}
+
+  <section id="archive" class="d1-band grain">
+    <div class="wrap">
+      <details class="ev-archive">
+        <summary class="d1-display">archive</summary>
+        {past.length > 0 ? <EventList items={past} archive /> : <p class="ev__none">{ui.nothingPosted}</p>}
+      </details>
+    </div>
+  </section>
+</Site>
+
+<script>
+  import { watchUpcoming } from '../../lib/upcoming-client';
+  watchUpcoming();
+</script>

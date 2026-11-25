@@ -1,0 +1,116 @@
+{
+  "_readme": "One entry per subcommittee page at /service/{slug}/. Text is the old site's, word for word. Rich text: a paragraph is a list of parts; a part is plain text or {\"t\": text, \"b\": true (bold), \"a\": link, \"i\": true (italic)}. Meeting rules: {\"nth\": 3, \"weekday\": 0} is the 3rd Sunday (0 Sunday ... 6 Saturday); add \"plus_days\" for a day after it; add \"skip_months\" (1-12) for months with no meeting. Every meeting detail is marked confirm: true until the Area signs off.",
+  "committees": [
+    {
+      "slug": "activities",
+      "nav": "Activities",
+      "h1": "Activities Subcommittee",
+      "lead": "Activities Subcommittee",
+      "scene": "pavilion",
+      "body": [
+        ["This committee plans and carries out activities such as picnics and dances to spark interest and encourage participation and support. Fundraisers are important as it generates money to help carry the message of recovery, while welcoming activities that motivate attendance by increasing awareness of how the fellowship helps us as members in our personal recovery."]
+      ],
+      "meets": [
+        { "label": "3rd Sunday of the month", "nth": 3, "weekday": 0, "start": "11:00", "end": "12:00", "place": "Virtual", "zoom": "https://us02web.zoom.us/j/82896136760?pwd=9VkIjGrb4mY99OU0TxzHQvbZcx8ri3.1", "confirm": true }
+      ],
+      "policy": "Activities Policy",
+      "mailbox": "activities@bergenarea.org",
+      "events": "activities"
+    },
+    {
+      "slug": "convention",
+      "nav": "Convention",
+      "h1": "Convention",
+      "scene": "fireworks",
+      "body": [
+        ["This committee is responsible for, but not limited to, organizing the yearly area convention and putting on fundraisers."],
+        [{ "t": "Link to the New Year New Life (Bergen Area’s New Year’s Eve Convention) website.", "a": "https://www.newyearnewlife.org/" }]
+      ],
+      "meets": [
+        { "label": "4th Sunday of the month", "nth": 4, "weekday": 0, "start": "19:00", "end": "21:00", "place": "Christ Church", "address": "251 State St, Hackensack, NJ", "skip_months": [12], "confirm": true }
+      ],
+      "policy": "Convention Policy",
+      "mailbox": "convention@bergenarea.org",
+      "events": "convention"
+    },
+    {
+      "slug": "fd",
+      "nav": "Fellowship Development",
+      "h1": "Fellowship Development",
+      "lead": "Grow Together. Carry the Message. Strengthen the Fellowship.",
+      "scene": "road-horizon",
+      "sections": [
+        {
+          "h2": "What Is Fellowship Development?",
+          "body": [
+            ["Fellowship Development supports the growth of Narcotics Anonymous by helping groups thrive, encouraging service, welcoming new members, and connecting addicts with recovery resources. Together we plant seeds that strengthen our fellowship."]
+          ],
+          "buttons": [
+            { "label": "Service Opportunities", "route": "service", "icon": "clipboard" },
+            { "label": "NA Literature", "href": "https://na.org/literature/", "icon": "keytag" },
+            { "label": "Events and Workshops", "route": "events", "icon": "calendar" },
+            { "label": "Find A Meeting", "route": "meetings", "icon": "pin" }
+          ]
+        },
+        {
+          "h2": "“Planting the Seeds of Recovery”",
+          "steps": [
+            "Seed – Attend a Meeting",
+            "Water – Get a Sponsor",
+            "Bloom – Work the Steps",
+            "Grow – Be of Service",
+            "Harvest – Carry the Message"
+          ]
+        }
+      ],
+      "meets": [
+        { "label": "3rd Monday of the month", "nth": 3, "weekday": 1, "start": "19:30", "end": "21:00", "place": "Virtual", "zoom_id": "382-274-8473", "zoom_password": "01312021", "confirm": true }
+      ],
+      "policy": "Fellowship Development Policy",
+      "mailbox": "info@bergenarea.org"
+    },
+    {
+      "slug": "handi",
+      "nav": "Hospitals & Institutions",
+      "h1": "Hospitals & Institutions",
+      "scene": "chairs",
+      "body": [
+        ["This committee is responsible for the express purpose of carrying the NA message of recovery to men and women “housed” in correctional institutions, hospitals, and recovery houses."],
+        ["A completed ", { "t": "background check form", "a": "doc:Background-Check-Form-2019.pdf" }, " is required to speak in Bergen County jails."],
+        ["We have commitments ready to open (however need people to fill)."]
+      ],
+      "meets": [
+        { "label": "1st Friday of the month", "nth": 1, "weekday": 5, "start": "19:30", "end": "21:00", "place": "New Bridge Medical Center", "address": "230 E Ridgewood Ave, Paramus, NJ 07652", "confirm": true },
+        { "label": "3rd Wednesday of the month", "nth": 3, "weekday": 3, "start": "19:30", "end": "21:00", "place": "New Bridge Medical Center", "address": "230 E Ridgewood Ave, Paramus, NJ 07652", "confirm": true }
+      ],
+      "policy": "Hospitals & Institutions Policy",
+      "mailbox": "hospitalsandinstitutions@bergenarea.org"
+    },
+    {
+      "slug": "pr",
+      "nav": "Public Relations",
+      "h1": "PUBLIC RELATIONS",
+      "scene": "table",
+      "body": [
+        ["This committee is responsible for informing the public of the existence, location and purpose of Narcotics Anonymous with special emphasis on the addict who still suffers."]
+      ],
+      "meets": [
+        { "label": "Thursday after the 3rd Tuesday of the month", "nth": 3, "weekday": 2, "plus_days": 2, "start": "19:30", "end": "21:00", "place": "New Bridge Medical Center, Conference Room", "address": "230 E Ridgewood Ave, Paramus, NJ 07652", "confirm": true }
+      ],
+      "policy": "Public Relations Policy",
+      "mailbox": "pr@bergenarea.org"
+    },
+    {
+      "slug": "rcm",
+      "nav": "Regional Committee Member (RCM)",
+      "h1": "REGIONAL COMMITTEE MEMBER INFO (RCM)",
+      "lead": "Regional Committee Members (RCM)",
+      "scene": "road-horizon",
+      "body": [
+        ["The purpose of the RCM team is to interact with the Narcotics Anonymous service structure on the Regional level. They are the liaisons that participate in the flow of information between the Area and Regional service body."]
+      ],
+      "meets": [],
+      "mailbox": "rcm@bergenarea.org"
+    }
+  ]
+}

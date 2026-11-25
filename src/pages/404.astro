@@ -1,0 +1,15 @@
+---
+import Site from '../layouts/Site.astro';
+import PageHead from '../components/site/PageHead.astro';
+import { Icon } from '../components/shared/icons/Icon';
+import { deck } from '../content/deck';
+import { route } from '../lib/href';
+---
+<Site title={deck.site.browserTitle} description="Bergen Area of Narcotics Anonymous">
+  <PageHead h1={deck.hero.h1} scene="road-horizon" seed={59}>
+    <p class="pg-actions">
+      <a class="d1-btn d1-btn--lg" href={route('meetings')}>{deck.hero.button}<Icon name="arrow" /></a>
+      <a class="d1-btn d1-btn--white" href={route('home')}>BergenArea.org<Icon name="arrow" /></a>
+    </p>
+  </PageHead>
+</Site>

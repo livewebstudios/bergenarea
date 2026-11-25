@@ -1,0 +1,22 @@
+---
+/* One paragraph of old-site text with its bold, italic and links kept.
+   A part is plain text or { t, b?, i?, a? }. Text is never changed here. */
+import { resolveLink } from '../../lib/links';
+export type Part = string | { t: string; b?: boolean; i?: boolean; a?: string };
+interface Props { parts: Part[]; as?: 'p' | 'span' | 'li' | 'h3'; class?: string }
+const { parts, as: Tag = 'p', class: cls } = Astro.props;
+// a link that stands alone on its line gets a full 44px tap target
+const solo = parts.length === 1 ? 'pg-solo' : undefined;
+const items = parts.map((p) => {
+  if (typeof p === 'string') return { t: p };
+  const link = p.a ? resolveLink(p.a) : undefined;
+  return { ...p, link };
+});
+---
+<Tag class={cls}>{items.map((p) => {
+  const inner = p.b ? <strong>{p.t}</strong> : p.i ? <em>{p.t}</em> : p.t;
+  if (!('link' in p) || !p.link) return inner;
+  return p.link.external
+    ? <a class={solo} href={p.link.url} target="_blank" rel="noopener noreferrer">{inner}</a>
+    : <a class={solo} href={p.link.url}>{inner}</a>;
+})}</Tag>

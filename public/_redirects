@@ -1,0 +1,27 @@
+# Old WordPress addresses -> new pages (full-site spec section 2)
+/area-service                              /service/              301
+/area-service/                             /service/              301
+/service/regional-commitee-member-rcm/*    /service/rcm/          301
+/service/regional-commitee-member-rcm      /service/rcm/          301
+/mayo/*                                    /events/               301
+/category/*                                /events/               301
+/budget-meeting-zoom-info/*                /service/              301
+/announcement/*                            /events/               301
+/feed/*                                    /events/               301
+/report-an-update/*                        /contact-us/?topic=meeting    301
+/report-an-update                          /contact-us/?topic=meeting    301
+/  current-meeting-list=:id                /meetings/printable/   301!
+
+# Old document addresses -> /docs/. Add a line for each file once it is copied into public/docs/:
+# /wp-content/uploads/2023/09/newmotionformFILL.pdf   /docs/newmotionformFILL.pdf   301
+
+# Admin editors: Netlify role redirects, a second lock on top of public/admin/gate.js.
+# Off until tested on the live Netlify site (full-site spec 6.4: keep only if it tests clean). To turn on, remove the leading # from the 8 lines.
+# /admin/convention/*   /admin/convention/:splat   200!   Role=convention,webmaster
+# /admin/convention/*   /admin/                    302
+# /admin/activities/*   /admin/activities/:splat   200!   Role=activities,webmaster
+# /admin/activities/*   /admin/                    302
+# /admin/area/*         /admin/area/:splat         200!   Role=area,webmaster
+# /admin/area/*         /admin/                    302
+# /admin/notice/*       /admin/notice/:splat       200!   Role=webmaster
+# /admin/notice/*       /admin/                    302

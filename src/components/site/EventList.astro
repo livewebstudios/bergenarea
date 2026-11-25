@@ -1,0 +1,35 @@
+---
+/* A list of event cards. Items past their end drop off in the browser (upcoming-client), no rebuild.
+   Flyers are optional and come from the committee's editor. */
+import { ui } from '../../content/deck';
+import { Icon } from '../shared/icons/Icon';
+import { href } from '../../lib/href';
+import type { EventView } from '../../lib/events';
+interface Props { items: EventView[]; limit?: number; archive?: boolean }
+const { items, limit = 50, archive = false } = Astro.props;
+const img = (src: string) => (src.startsWith('http') ? src : href(src));
+---
+<div class="ev-list" data-upcoming={archive ? undefined : ''} data-limit={limit}>
+  <ul class="ev-grid">
+    {items.map((ev, i) => (
+      <li class="ev" data-expires={archive ? undefined : ev.expires} hidden={!archive && i >= limit}>
+        {ev.flyer && <img class="ev__flyer" src={img(ev.flyer)} alt={ev.flyer_alt ?? ''} loading="lazy" decoding="async" />}
+        <div class="ev__body">
+          <p class="ev__title">{ev.title}</p>
+          <p class="d1-display ev__when">{ev.when}</p>
+          {ev.status === 'moved' && <p class="ev__note">{ev.note}</p>}
+          {ev.location_name && <p class="ev__where">{ev.location_name}</p>}
+          {ev.address && <p class="ev__where">{ev.address}</p>}
+          {ev.status !== 'moved' && ev.note && <p class="ev__where">{ev.note}</p>}
+          {ev.summary && <p class="ev__summary">{ev.summary}</p>}
+          {ev.virtual_info && <p class="ev__where">{ev.virtual_info}</p>}
+          <p class="ev__links">
+            {!archive && ev.virtual_link && <a class="d1-btn d1-btn--white" href={ev.virtual_link} target="_blank" rel="noopener noreferrer">{ui.joinZoom}<Icon name="arrow" /></a>}
+            {ev.link_url && <a class="ev__link" href={ev.link_url} target="_blank" rel="noopener noreferrer">{ev.link_label || ui.eventDetails}</a>}
+          </p>
+        </div>
+      </li>
+    ))}
+  </ul>
+  {!archive && <p class="ev__none" data-empty hidden={items.length > 0}>{ui.nothingPosted}</p>}
+</div>

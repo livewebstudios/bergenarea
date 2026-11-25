@@ -1,0 +1,111 @@
+---
+/* Contact: the old Gravity Form's questions, word for word, sent through Formspree.
+   One form to info@ with the committee in the subject line (full-site spec decision D5, default a).
+   A meeting's "Report an Update" link opens this form on the meeting-change branch with the meeting filled in. */
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import { Icon } from '../../components/shared/icons/Icon';
+import { contactPage as p } from '../../content/pages';
+
+// FORMSPREE: replace with the form's real ID before launch (formspree.io/f/<id>).
+const FORMSPREE_ID = 'FORMSPREE_ID';
+const f = p.fields;
+---
+<Site title="Contact Us | Bergen Area of Narcotics Anonymous" description="Thank you for contacting Bergen Area Service Committee. Please fill out the form below or email us directly at info@bergenarea.org." crumbs={[{ name: 'Contact', path: 'contact-us/' }]}>
+  <PageHead h1={p.h1} scene="pavilion" seed={41}>
+    <p class="pg-head__intro">{p.intro[0].replace('info@bergenarea.org.', '')}<a href="mailto:info@bergenarea.org">info@bergenarea.org</a>.</p>
+  </PageHead>
+
+  <section class="d1-band grain" id="form">
+    <div class="wrap">
+      <form class="pg-card cf" action={`https://formspree.io/f/${FORMSPREE_ID}`} method="POST" data-contact>
+        <p>{p.intro[1]}</p>
+        <p class="cf__req">{p.intro[2]}</p>
+        <input type="hidden" name="_subject" value="Bergen Area website message" data-subject />
+        <input type="text" name="_gotcha" class="cf__trap" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <div class="cf__row">
+          <label class="cf__field"><span>{f.name} *</span><input name="name" autocomplete="name" required /></label>
+          <label class="cf__field"><span>{f.email} *</span><input name="email" type="email" autocomplete="email" required /></label>
+          <label class="cf__field"><span>{f.phone}</span><input name="phone" type="tel" autocomplete="tel" /></label>
+        </div>
+
+        <fieldset class="cf__group">
+          <legend>{f.topic}</legend>
+          {f.topics.map((t, i) => (
+            <label class="cf__choice"><input type="radio" name="topic" value={t.label} data-topic={t.value} checked={i === 0} /><span>{t.label}</span></label>
+          ))}
+        </fieldset>
+
+        <div class="cf__branch" data-branch="committee">
+          <label class="cf__field"><span>{f.committee}</span>
+            <select name="committee" data-committee>
+              <option value=""></option>
+              {f.committees.map((c) => <option value={c}>{c}</option>)}
+            </select>
+          </label>
+        </div>
+
+        <div class="cf__branch" data-branch="meeting">
+          <fieldset class="cf__group">
+            <legend>{f.relationship} *</legend>
+            {f.relationships.map((r) => <label class="cf__choice"><input type="checkbox" name="relationship" value={r} data-needs="meeting" /><span>{r}</span></label>)}
+          </fieldset>
+          <fieldset class="cf__group">
+            <legend>{f.day} *</legend>
+            {f.days.map((d) => <label class="cf__choice"><input type="radio" name="meeting_day" value={d} data-needs="meeting" /><span>{d}</span></label>)}
+          </fieldset>
+          <label class="cf__field"><span>{f.town}</span><input name="meeting_town" /></label>
+          <label class="cf__field"><span>{f.changes}</span><textarea name="meeting_changes" rows="4" data-meeting-changes></textarea></label>
+        </div>
+
+        <label class="cf__field"><span>{f.message}</span><textarea name="message" rows="6"></textarea></label>
+
+        <p><button type="submit" class="d1-btn d1-btn--lg">{p.button}<Icon name="arrow" /></button></p>
+      </form>
+    </div>
+  </section>
+</Site>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact]');
+  if (form) {
+    const params = new URLSearchParams(location.search);
+    const radios = [...form.querySelectorAll<HTMLInputElement>('[data-topic]')];
+    const committee = form.querySelector<HTMLSelectElement>('[data-committee]')!;
+    const subject = form.querySelector<HTMLInputElement>('[data-subject]')!;
+    const changes = form.querySelector<HTMLTextAreaElement>('[data-meeting-changes]')!;
+
+    // Prefill from a link: ?topic=meeting&meeting=... or ?to=pr@bergenarea.org
+    const to = params.get('to');
+    const topic = params.get('topic') ?? (to && to !== 'info@bergenarea.org' ? 'committee' : null);
+    if (topic) radios.find((r) => r.dataset.topic === topic)?.click();
+    if (to && [...committee.options].some((o) => o.value === to)) committee.value = to;
+    const meeting = params.get('meeting');
+    if (meeting && !changes.value) changes.value = `${meeting}\n`;
+
+    const sync = () => {
+      const current = radios.find((r) => r.checked)?.dataset.topic ?? 'general';
+      form.querySelectorAll<HTMLElement>('[data-branch]').forEach((b) => {
+        const on = b.dataset.branch === current;
+        b.hidden = !on;
+        b.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input, select, textarea').forEach((el) => { el.disabled = !on; });
+      });
+      // the day is required on the meeting branch; one relationship box must be ticked
+      form.querySelectorAll<HTMLInputElement>('input[type="radio"][data-needs="meeting"]').forEach((el) => { el.required = current === 'meeting'; });
+      subject.value = current === 'committee' && committee.value ? `Bergen Area website message for ${committee.value}` : current === 'meeting' ? 'Bergen Area website: meeting list change' : 'Bergen Area website message';
+    };
+    radios.forEach((r) => r.addEventListener('change', sync));
+    committee.addEventListener('change', sync);
+    form.addEventListener('submit', (e) => {
+      const boxes = [...form.querySelectorAll<HTMLInputElement>('input[type="checkbox"][data-needs="meeting"]')];
+      if (!boxes[0].disabled && !boxes.some((b) => b.checked)) {
+        e.preventDefault();
+        boxes[0].setCustomValidity(' ');
+        boxes[0].reportValidity();
+        boxes.forEach((b) => b.addEventListener('change', () => boxes[0].setCustomValidity(''), { once: true }));
+      }
+    });
+    sync();
+  }
+</script>

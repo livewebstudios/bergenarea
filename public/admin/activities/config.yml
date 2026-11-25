@@ -1,0 +1,46 @@
+backend:
+  name: git-gateway
+  branch: main
+  commit_messages:
+    create: "Activities: add {{path}}"
+    update: "Activities: update {{path}}"
+    delete: "Activities: delete {{path}}"
+    uploadMedia: "Activities: upload {{path}}"
+    deleteMedia: "Activities: delete {{path}}"
+
+# Lets the editor run against files on this computer with `npx decap-server`. Ignored on the live site.
+local_backend: true
+
+media_folder: "public/uploads/activities"
+public_folder: "/uploads/activities"
+
+collections:
+  - name: "activities"
+    label: "Activities events"
+    description: "For the Activities subcommittee. How to use this editor: open /admin/activities/guide.html"
+    editor: {preview: false}
+    files:
+      - name: "events"
+        label: "Activities events"
+        file: "content/events-activities.json"
+        fields:
+          - label: "Events"
+            name: "events"
+            widget: "list"
+            label_singular: "event"
+            summary: "{{fields.title}} ({{fields.start}})"
+            add_to_top: true
+            hint: "Past events drop off the site by themselves. You do not need to delete them."
+            fields:
+              - {label: "Title", name: "title", widget: "string", hint: "The event name as it should appear. Example: New Year New Life 34"}
+              - {label: "Starts", name: "start", widget: "datetime", format: "YYYY-MM-DDTHH:mm", date_format: "YYYY-MM-DD", time_format: "HH:mm", picker_utc: false, hint: "New Jersey time. Example: 2027-06-12 at 12:00 for noon on June 12, 2027."}
+              - {label: "Ends", name: "end", widget: "datetime", format: "YYYY-MM-DDTHH:mm", date_format: "YYYY-MM-DD", time_format: "HH:mm", picker_utc: false, required: false, default: "", hint: "Optional. New Jersey time. The event drops off the site after this. Example: 2027-06-12 at 16:00."}
+              - {label: "Place name", name: "location_name", widget: "string", required: false, hint: "Optional. Example: Saddle River County Park, Wild Duck Pond area"}
+              - {label: "Address", name: "address", widget: "string", required: false, hint: "Optional. Street, town, state. Example: 105 Fairview Ave, Westwood, NJ 07675"}
+              - {label: "Zoom link", name: "virtual_link", widget: "string", required: false, hint: "Optional. The full join link. Example: https://us02web.zoom.us/j/12345678901"}
+              - {label: "Zoom details", name: "virtual_info", widget: "string", required: false, hint: "Optional. Meeting ID and passcode as people should see them. Example: Meeting ID 123 4567 8901, Passcode 1234"}
+              - {label: "Short description", name: "summary", widget: "text", required: false, hint: "Optional. A sentence or two. Example: Picnic, games and a speaker. Bring a chair."}
+              - {label: "Flyer", name: "flyer", widget: "image", required: false, hint: "Optional. Flyers with personal phone numbers or addresses will not allowed to be posted on this website. No people, no faces. Example: a JPG or PNG of the event flyer."}
+              - {label: "Flyer description", name: "flyer_alt", widget: "string", required: false, hint: "Optional, but fill it in when there is a flyer. Say what the flyer shows for people who cannot see it. Example: Flyer for the summer picnic, June 12, Saddle River County Park"}
+              - {label: "Link text", name: "link_label", widget: "string", required: false, hint: "Optional. The words on the link. Example: Convention website"}
+              - {label: "Link address", name: "link_url", widget: "string", required: false, hint: "Optional. Example: https://www.newyearnewlife.org/"}

@@ -1,0 +1,23 @@
+---
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import Rich from '../../components/site/Rich.astro';
+import { Icon } from '../../components/shared/icons/Icon';
+import { donationsPage as p, seventhPage } from '../../content/pages';
+import { route } from '../../lib/href';
+---
+<Site title="Donations | Bergen Area of Narcotics Anonymous" description="Bergen Area Service has recently set up a way so NA members can donate directly to Bergen Area." crumbs={[{ name: 'Donations', path: 'donations/' }]}>
+  <PageHead h1={p.h1} scene="keytag" seed={43} />
+  <section class="d1-band grain">
+    <div class="wrap pg-split pg-split--even">
+      <div class="pg-prose">
+        <h2 class="d1-display pg-h2">{p.h2}</h2>
+        {p.body.map((part) => <Rich parts={part} />)}
+      </div>
+      <div class="pg-when">
+        <p class="d1-display pg-when__date">{seventhPage.chat.replace('All donations to the area should be sent to ', '')}</p>
+        <p><a class="d1-btn d1-btn--white" href={route('seventh')}>{seventhPage.h1}<Icon name="arrow" /></a></p>
+      </div>
+    </div>
+  </section>
+</Site>

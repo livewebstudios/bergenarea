@@ -1,0 +1,28 @@
+---
+/* Group Start Dates: every meeting by weekday, `{name} - {start date}`.
+   The date is the database's birth_date with the "Birthdate#@-@#" prefix stripped. Blank is allowed. */
+import '../../styles/meetings.css';
+import Site from '../../layouts/Site.astro';
+import PageHead from '../../components/site/PageHead.astro';
+import { startDatesPage } from '../../content/pages';
+import { loadMeetings } from '../../lib/load';
+import { DAY_NAMES } from '../../lib/time';
+
+const data = await loadMeetings();
+const days = DAY_NAMES.map((name, i) => ({ name, list: data.meetings.filter((m) => m.day === i) })).filter((d) => d.list.length);
+---
+<Site title="Group Start Dates | Bergen Area of Narcotics Anonymous" description="Bergen Area NA meetings by weekday, with the date each group started." crumbs={[{ name: startDatesPage.h1, path: 'group-start-dates/' }]}>
+  <PageHead h1={startDatesPage.h1} scene="keytag" seed={29} />
+  <section class="d1-band grain">
+    <div class="wrap gsd">
+      {days.map((d) => (
+        <section class="gsd-day">
+          <h2 class="d1-display gsd-day__name">{d.name}</h2>
+          <ul class="gsd-list">
+            {d.list.map((m) => <li>{`${m.name} - ${m.startDate}`}</li>)}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </section>
+</Site>

@@ -1,0 +1,39 @@
+backend:
+  name: git-gateway
+  branch: main
+  commit_messages:
+    create: "Popup: add {{path}}"
+    update: "Popup: update {{path}}"
+    delete: "Popup: delete {{path}}"
+    uploadMedia: "Popup: upload {{path}}"
+    deleteMedia: "Popup: delete {{path}}"
+
+# Lets the editor run against files on this computer with `npx decap-server`. Ignored on the live site.
+local_backend: true
+
+media_folder: "public/uploads/notice"
+public_folder: "/uploads/notice"
+
+collections:
+  - name: "notice"
+    label: "Home page popup"
+    description: "For the webmaster. How to use this editor: open /admin/notice/guide.html"
+    editor: {preview: false}
+    files:
+      - name: "notice"
+        label: "Home page popup"
+        file: "content/notice.json"
+        fields:
+          - {label: "Id", name: "id", widget: "hidden", default: ""}
+          - {label: "On", name: "enabled", widget: "boolean", default: false, hint: "Turn this off to hide the popup everywhere, whatever the dates say."}
+          - {label: "Title", name: "title", widget: "string", hint: "Short. Example: New Year New Life 34"}
+          - {label: "Message", name: "body", widget: "text", hint: "Short, plain text. Example: Dec 31, 12:00 PM - Jan 2, 1:00 PM (EST)"}
+          - {label: "Picture", name: "image", widget: "image", required: false, hint: "Optional. No people, no faces. No personal phone numbers or addresses. Example: a flyer or a simple graphic."}
+          - {label: "Picture description", name: "image_alt", widget: "string", required: false, hint: "Optional, but fill it in when there is a picture. Example: Flyer for New Year New Life 34"}
+          - {label: "Button label", name: "button_label", widget: "string", required: false, hint: "Optional. Example: Convention website"}
+          - {label: "Button link", name: "button_url", widget: "string", required: false, hint: "Optional. Example: https://www.newyearnewlife.org/"}
+          - {label: "First day shown", name: "start", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, picker_utc: false, hint: "New Jersey date. Example: 2026-12-01"}
+          - {label: "Last day shown", name: "end", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, picker_utc: false, hint: "New Jersey date. The popup stops after this day. Example: 2027-01-02"}
+          - {label: "Style", name: "style", widget: "select", default: "info", options: [{label: "Info", value: "info"}, {label: "Urgent", value: "urgent"}, {label: "Celebration", value: "celebration"}], hint: "Urgent draws the card in red. Celebration adds the fireworks drawing when there is no picture."}
+          - {label: "Show", name: "frequency", widget: "select", default: "once", options: [{label: "Once per visitor", value: "once"}, {label: "Every visit", value: "every-visit"}], hint: "Once per visitor is right for most notices."}
+          - {label: "Where", name: "scope", widget: "select", default: "home", options: [{label: "Home page only", value: "home"}, {label: "Every page", value: "all-pages"}], hint: "Example: Every page for an urgent change like a cancelled Area Service."}

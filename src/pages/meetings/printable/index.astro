@@ -1,0 +1,67 @@
+---
+/* The printable meeting list (replaces the old bread PDF). Same data, laid out for US Letter. */
+import '../../../styles/meetings.css';
+import Site from '../../../layouts/Site.astro';
+import { Icon } from '../../../components/shared/icons/Icon';
+import { meetingsPage } from '../../../content/pages';
+import { deck, ui } from '../../../content/deck';
+import { href } from '../../../lib/href';
+import { loadMeetings } from '../../../lib/load';
+import { DAY_NAMES } from '../../../lib/time';
+import { placeLine } from '../../../lib/finder';
+
+const data = await loadMeetings();
+const buildDate = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', month: 'long', day: 'numeric', year: 'numeric' }).format(new Date());
+const days = DAY_NAMES.map((name, i) => ({ name, list: data.meetings.filter((m) => m.day === i) })).filter((d) => d.list.length);
+const legend = (() => {
+  const seen = new Map<string, string>();
+  for (const m of data.meetings) for (const f of m.formats) if (!seen.has(f.code)) seen.set(f.code, f.name);
+  return [...seen].sort(([a], [b]) => a.localeCompare(b));
+})();
+---
+<Site title={`${meetingsPage.printed} | Bergen Area of Narcotics Anonymous`} description={deck.meetings.countSentence(data.counts.groups, data.counts.meetings)} crumbs={[{ name: 'Meetings', path: 'meetings/' }, { name: meetingsPage.printed, path: 'meetings/printable/' }]} bodyClass="mf-print-page">
+  <section class="d1-band grain pr-band">
+    <div class="wrap pr-sheet">
+      <header class="pr-head">
+        <img class="pr-logo" src={href('img/logo.png')} alt={deck.site.logoAlt} width="200" height="43" />
+        <div class="pr-head__text">
+          <h1 class="d1-display pr-title">{meetingsPage.printed}</h1>
+          <p class="pr-meta">{ui.printed}: <span data-printed>{buildDate}</span></p>
+          <p class="pr-meta">{deck.site.helpline.full}</p>
+        </div>
+        <p class="pr-actions"><button type="button" class="d1-btn d1-btn--lg" data-print><Icon name="clipboard" />{ui.printOrSave}</button></p>
+      </header>
+
+      {days.map((d) => (
+        <section class="pr-day">
+          <h2 class="d1-display pr-day__name">{d.name}</h2>
+          <table class="pr-table">
+            <tbody>
+              {d.list.map((m) => (
+                <tr>
+                  <td class="pr-time">{m.timeLabel}</td>
+                  <td class="pr-name"><strong>{m.name}</strong>{m.wheelchair && <span class="pr-wc"> (WC)</span>}<br /><span class="pr-place">{placeLine(m)}{m.venue !== 'virtual' && m.address && m.locationName ? `, ${m.address}` : ''}</span>{m.locationInfo && <><br /><span class="pr-place">{m.locationInfo}</span></>}</td>
+                  <td class="pr-formats">{m.formats.map((f) => f.code).join(', ')}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      ))}
+
+      <section class="pr-legend">
+        <h2 class="pr-legend__title">{ui.formats}</h2>
+        <dl>
+          {legend.map(([code, name]) => <div><dt>{code}</dt><dd>{name}</dd></div>)}
+        </dl>
+      </section>
+      <p class="pr-count">{deck.meetings.countSentence(data.counts.groups, data.counts.meetings)}</p>
+    </div>
+  </section>
+</Site>
+
+<script>
+  const stamp = document.querySelector<HTMLElement>('[data-printed]');
+  if (stamp) stamp.textContent = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', month: 'long', day: 'numeric', year: 'numeric' }).format(new Date());
+  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+</script>

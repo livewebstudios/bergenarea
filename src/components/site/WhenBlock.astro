@@ -1,0 +1,36 @@
+---
+/* "Next meeting": the next date computed from a rule, plus where and how to join.
+   Several dates are rendered; the browser hides the ones that have passed (upcoming-client). */
+import { ui } from '../../content/deck';
+import { Icon } from '../shared/icons/Icon';
+import { clockToMinutes, formatClockUpper, formatWallRange } from '../../lib/time';
+import type { EventItem } from '../../lib/upcoming';
+import type { MeetRule } from '../../lib/committees';
+interface Props { dates: (EventItem & { rule?: MeetRule })[]; rules?: MeetRule[]; limit?: number }
+const { dates, rules = [], limit = 1 } = Astro.props;
+const clock = (c: string) => formatClockUpper(clockToMinutes(c));
+---
+<div class="pg-when">
+  <p class="pg-when__kicker">{ui.nextMeeting}</p>
+  <div data-upcoming data-limit={limit}>
+    <ul class="pg-when__dates">
+      {dates.map((d, i) => (
+        <li data-expires={d.end || d.start} hidden={i >= limit}>
+          <p class="d1-display pg-when__date">{formatWallRange(d.start, d.end)}</p>
+          {d.title && <p class="pg-when__title">{d.title}</p>}
+          {d.note && <p class="pg-when__note">{d.note}</p>}
+        </li>
+      ))}
+    </ul>
+    <p class="pg-when__none" data-empty hidden={dates.length > 0}>{ui.nothingPosted}</p>
+  </div>
+  {rules.map((r) => (
+    <div class="pg-when__rule">
+      <p><strong>{r.label}</strong><br />{clock(r.start)} - {clock(r.end)}</p>
+      {r.place && <p class="pg-when__place"><Icon name={r.zoom || r.zoom_id ? 'phone' : 'pin'} /><span>{r.place}{r.address && <><br />{r.address}</>}</span></p>}
+      {r.zoom && <p><a class="d1-btn d1-btn--white" href={r.zoom} target="_blank" rel="noopener noreferrer">{ui.joinZoom}<Icon name="arrow" /></a></p>}
+      {r.zoom_id && <p class="pg-when__zoom">Zoom ID: <strong>{r.zoom_id}</strong> · Password: <strong>{r.zoom_password}</strong></p>}
+    </div>
+  ))}
+  <slot />
+</div>

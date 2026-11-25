@@ -162,6 +162,24 @@ export const ui = {
   notice: 'Notice',
   // Not on the approved list. Plainest two words for an empty meeting list (logged in OPEN_QUESTIONS.md).
   noMeetings: 'No meetings',
+  // MEETINGS PAGE (Phase 2). Plain interface words for the full finder, the printable list
+  // and Report an Update (content pack section 13 names the page "Report an Update").
+  byDay: 'By day',
+  byTown: 'By town',
+  nearMe: 'Near me',
+  map: 'Map',
+  favorites: 'Favorites',
+  search: 'Search',
+  allFormats: 'All formats',
+  reportUpdate: 'Report an Update',
+  miles: (n: number) => `${n < 10 ? n.toFixed(1) : Math.round(n)} miles`,
+  findingYou: 'Finding your location',
+  noLocation: 'Your location is not available. Meetings are sorted by day instead.',
+  save: 'Save',
+  saved: 'Saved',
+  noFavorites: 'No favorites saved yet.',
+  printOrSave: 'Print or save as PDF',
+  printed: 'Printed',
 } as const;
 
 export const aboutFirstText = deck.about.first.map((p) => p.text).join('');
