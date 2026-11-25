@@ -1,5 +1,5 @@
 {
-  "_readme": "Area Service documents. Policies are Google Docs. Forms and logos are files: put each file in public/docs/ with the same name and the site links to it there. Until a file is in public/docs/, the link points at the old site's copy (old_url). updated is optional, YYYY-MM.",
+  "_readme": "Area Service documents. Policies are Google Docs. Forms and logos are files: put each file in public/docs/ with the same name and the site links to it there. If a file is missing from public/docs/, the link falls back to the old site's copy (old_url). A new file also needs a redirect line in public/_redirects. updated is optional, YYYY-MM.",
   "policies": [
     { "label": "Bergen Area Policy", "href": "https://docs.google.com/document/d/1ZpJguHOU1Bgut1FB0dr9fwecuasg0xjBIp3ZRBM7bQM" },
     { "label": "Hospitals & Institutions Policy", "href": "https://docs.google.com/document/d/1j2Pw0YCDFh4Zintbcd_TyFDzL0NT96QgBJkYu--tDTM" },

@@ -12,8 +12,16 @@
 /report-an-update                          /contact-us/?topic=meeting    301
 /  current-meeting-list=:id                /meetings/printable/   301!
 
-# Old document addresses -> /docs/. Add a line for each file once it is copied into public/docs/:
-# /wp-content/uploads/2023/09/newmotionformFILL.pdf   /docs/newmotionformFILL.pdf   301
+# Old document addresses -> /docs/
+/wp-content/uploads/2023/09/newmotionformFILL.pdf         /docs/newmotionformFILL.pdf             301
+/wp-content/uploads/2026/05/OrderForm2026.pdf             /docs/OrderForm2026.pdf                 301
+/wp-content/uploads/2026/05/OrderForm2026.xlsx            /docs/OrderForm2026.xlsx                301
+/wp-content/uploads/2023/01/BASC_GSR_REPORT_FORMFILL.pdf  /docs/BASC_GSR_REPORT_FORMFILL.pdf      301
+/wp-content/uploads/2023/01/subcommitteereportFILL.pdf    /docs/subcommitteereportFILL.pdf        301
+/wp-content/uploads/2019/02/Background-Check-Form-2019.pdf /docs/Background-Check-Form-2019.pdf    301
+/wp-content/uploads/2019/01/NALogo.gif                    /docs/NALogo.gif                        301
+/wp-content/uploads/2019/01/NASymbol.gif                  /docs/NASymbol.gif                      301
+/wp-content/uploads/2019/01/NALogoSunburst.gif            /docs/NALogoSunburst.gif                301
 
 # Admin editors: Netlify role redirects, a second lock on top of public/admin/gate.js.
 # Off until tested on the live Netlify site (full-site spec 6.4: keep only if it tests clean). To turn on, remove the leading # from the 8 lines.
