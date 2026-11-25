@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "id": "nynl33",
+  "style": "celebration",
+  "title": "New Year New Life 33",
+  "body": "Dec 31, 12:00 PM - Jan 2, 1:00 PM (EST)",
+  "image": "",
+  "image_alt": "",
+  "button_label": "New Year New Life (Bergen Area’s New Year’s Eve Convention)",
+  "button_url": "http://www.newyearnewlife.org/",
+  "start": "2026-11-24",
+  "end": "2027-01-02",
+  "frequency": "once",
+  "scope": "home"
+}

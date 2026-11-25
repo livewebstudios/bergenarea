@@ -1,0 +1,33 @@
+---
+/* The PSA video. A drawn poster (a Scene in the demo's own wash) with a hand-drawn play
+   triangle in a pill. Nothing from YouTube loads before the click, and YouTube's own
+   thumbnail is never shown. Clicking swaps in a youtube-nocookie iframe with autoplay. */
+import { deck, ui } from '../../content/deck';
+import { Icon } from './icons/Icon';
+import { Scene } from './Scene';
+import type { Slot } from '../../lib/ink/slots';
+interface Props { slot?: Slot; class?: string }
+const { slot = 'road-horizon', class: cls = '' } = Astro.props;
+---
+<div class={`video ${cls}`} data-video={deck.video.id} data-video-title={deck.video.title}>
+  <button type="button" class="video__poster" aria-label={`${ui.playVideo}: ${deck.video.title}`}>
+    <Scene slot={slot} />
+    <span class="video__pill"><Icon name="play" /><span>{ui.playVideo}</span></span>
+  </button>
+</div>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-video]').forEach((box) => {
+    const button = box.querySelector<HTMLButtonElement>('.video__poster');
+    button?.addEventListener('click', () => {
+      const frame = document.createElement('iframe');
+      frame.className = 'video__frame';
+      frame.src = `https://www.youtube-nocookie.com/embed/${box.dataset.video}?autoplay=1&rel=0`;
+      frame.title = box.dataset.videoTitle ?? '';
+      frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      frame.allowFullscreen = true;
+      frame.referrerPolicy = 'strict-origin-when-cross-origin';
+      box.replaceChildren(frame);
+      frame.focus();
+    }, { once: true });
+  });
+</script>

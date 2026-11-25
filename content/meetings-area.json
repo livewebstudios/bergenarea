@@ -1,0 +1,25 @@
+{
+  "recurring": {
+    "title": "Bergen Area Service",
+    "nth": 3,
+    "weekday": 2,
+    "start_time": "19:30",
+    "end_time": "22:00",
+    "location_name": "Westwood United Methodist Church",
+    "address": "105 Fairview Ave, Westwood, NJ 07675",
+    "exceptions": []
+  },
+  "extra": [
+    {
+      "title": "JAC Meeting",
+      "start": "",
+      "end": "",
+      "location_name": "Virtual",
+      "address": "",
+      "virtual_link": "",
+      "virtual_info": "",
+      "note": "",
+      "sample": true
+    }
+  ]
+}

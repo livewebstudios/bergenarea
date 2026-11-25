@@ -1,0 +1,9 @@
+---
+/* Helpline bar. Same visible text as the old site, two working tel: links. */
+import { deck } from '../../content/deck';
+import { Icon } from './icons/Icon';
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+const h = deck.site.helpline;
+---
+<p class={`helpline ${cls}`} data-deck="helpline"><Icon name="phone" /><span class="helpline__text">{h.before}<a href={h.first.href}>{h.first.label}</a>{h.between}<a href={h.second.href}>{h.second.label}</a>{h.after}</span></p>

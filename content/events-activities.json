@@ -1,0 +1,19 @@
+{
+  "events": [
+    {
+      "title": "Activities event",
+      "start": "",
+      "end": "",
+      "location_name": "",
+      "address": "",
+      "virtual_link": "",
+      "virtual_info": "",
+      "summary": "",
+      "flyer": "",
+      "flyer_alt": "",
+      "link_label": "",
+      "link_url": "",
+      "sample": true
+    }
+  ]
+}

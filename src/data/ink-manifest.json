@@ -1,0 +1,9 @@
+{
+  "hero-river": { "source": "coded", "file": "hero-river.svg" },
+  "road-horizon": { "source": "coded", "file": "road-horizon.svg" },
+  "chairs": { "source": "coded", "file": "chairs.svg" },
+  "table": { "source": "coded", "file": "table.svg" },
+  "pavilion": { "source": "coded", "file": "pavilion.svg" },
+  "fireworks": { "source": "coded", "file": "fireworks.svg" },
+  "keytag": { "source": "coded", "file": "keytag.svg" }
+}
