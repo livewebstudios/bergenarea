@@ -34,8 +34,8 @@ export function loadEvents(now: Date): Record<AreaKey, AreaEvents> {
   return {
     // The next Area Service meetings are computed; one-off meetings (JAC, budget) come from the file.
     area: {
-      // three Area Service dates are plenty; one-off meetings all show
-      upcoming: [...recurringOccurrences(area.recurring, now, 3), ...extra.filter((ev) => isUpcoming(ev, now))].sort(byStart).map(view),
+      // a year of Area Service dates: the browser hides each one as it passes, so the page never runs dry between builds
+      upcoming: [...recurringOccurrences(area.recurring, now, 13), ...extra.filter((ev) => isUpcoming(ev, now))].sort(byStart).map(view),
       past: extra.filter((ev) => !isUpcoming(ev, now)).sort(byStart).reverse().map(view),
     },
     convention: split(conventionFile.events as EventItem[], now),

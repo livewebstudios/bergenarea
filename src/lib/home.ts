@@ -6,7 +6,7 @@ export type { EventView };
 
 export interface HomeData { area: EventView[]; convention: EventView[]; activities: EventView[] }
 
-export function loadHome(buildNow: Date, keep = 4): HomeData {
+export function loadHome(buildNow: Date, keep = 13): HomeData {
   const e = loadEvents(buildNow);
   return { area: e.area.upcoming.slice(0, keep), convention: e.convention.upcoming.slice(0, keep), activities: e.activities.upcoming.slice(0, keep) };
 }

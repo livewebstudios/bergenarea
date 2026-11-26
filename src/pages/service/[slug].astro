@@ -28,7 +28,7 @@ type Committee = (typeof data.committees)[number] & {
 const { c } = Astro.props as { c: Committee };
 const now = new Date();
 const rules = c.meets as MeetRule[];
-const dates = nextDates(rules, now, 6).map(({ title, ...d }) => ({ ...d, title: rules.length > 1 ? d.rule.label : '' }));
+const dates = nextDates(rules, now, rules.length * 13).map(({ title, ...d }) => ({ ...d, title: rules.length > 1 ? d.rule.label : '' }));
 const policy = c.policy ? policyUrl(c.policy) : undefined;
 const events = c.events ? loadEvents(now)[c.events] : undefined;
 const description = (c.body?.[0] ?? c.sections?.[0]?.body?.[0] ?? []).map((p) => (typeof p === 'string' ? p : p.t)).join('').slice(0, 155);

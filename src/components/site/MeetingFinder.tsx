@@ -251,8 +251,10 @@ function MeetingMap({ meetings, onPick }: { meetings: Meeting[]; onPick: (m: Mee
       const map = L.map(box.current, { scrollWheelZoom: false }).setView([40.95, -74.07], 11);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',
       }).addTo(map);
+      // outside links open in a new tab, the map's credit line included
+      map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener noreferrer">Leaflet</a>');
       mapRef.current = map;
       layerRef.current = L.layerGroup().addTo(map);
       setReady(true);

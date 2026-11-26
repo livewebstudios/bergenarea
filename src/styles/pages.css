@@ -201,3 +201,19 @@
 .cf__trap { display: none; }
 /* the whole row is the target for radios and checkboxes; the box itself stays a normal size */
 .cf__choice input { margin: 0; }
+
+/* events page: the three areas side by side, each a tinted column like the home page cards */
+.ev-cols { display: grid; gap: var(--space-5); align-items: start; }
+@media (min-width: 62rem) { .ev-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.ev-col { padding: clamp(1.25rem, 0.8rem + 1.6vw, 2rem); border-radius: var(--radius-card); scroll-margin-top: 6rem; }
+.ev-col.ev-area--mint { background: var(--mint); }
+.ev-col.ev-area--tan { background: var(--tan); }
+.ev-col.ev-area--sky { background: var(--sky); }
+.ev-col .ev-area__head { margin-bottom: var(--space-5); }
+.ev-col .ev-area__art { width: 100%; }
+.ev-col__title { font-size: clamp(1.875rem, 1.5rem + 1.2vw, 2.375rem); }
+.ev-col .ev-grid { grid-template-columns: 1fr; gap: var(--space-4); }
+.ev-col .ev { background: var(--white); border-top: 0; }
+.ev-col .ev__body { padding: var(--space-4) var(--space-5); }
+.ev-col .ev__when { font-size: 1.3125rem; }
+.ev-col .ev__none { background: var(--white); }

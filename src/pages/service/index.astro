@@ -16,7 +16,7 @@ import { href } from '../../lib/href';
 
 const now = new Date();
 const area = areaFile as AreaMeetingsFile;
-const dates = areaMeetings({ recurring: area.recurring, extra: area.extra.filter((e) => !e.sample) }, now, 4);
+const dates = areaMeetings({ recurring: area.recurring, extra: area.extra.filter((e) => !e.sample) }, now, 13);
 ---
 <Site title="Area Service | Bergen Area of Narcotics Anonymous" description="The NA World Services Office defines an Area Service Committee (ASC) meeting as “the primary means by which the services of a local NA community are administered”." crumbs={[{ name: 'Area Service', path: 'service/' }]}>
   <PageHead h1={s.h1} scene="table" seed={11} />

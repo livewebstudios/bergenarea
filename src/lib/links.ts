@@ -2,7 +2,8 @@
 //   "doc:OrderForm2026.pdf"  a file in public/docs/ (or the old site's copy until it is moved over)
 //   "route:contact"          a page on this site
 //   "/contact-us/"           a page on this site, old-site style
-//   "https://..."            somewhere else, opens in a new tab
+//   "https://..."            somewhere else
+// Documents (PDF, Excel, images) and every outside address open in a new tab: `external` means "new tab".
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import documents from '../data/documents.json';
@@ -16,7 +17,7 @@ export function docUrl(file: string): string {
 }
 
 export function resolveLink(raw: string): { url: string; external: boolean } {
-  if (raw.startsWith('doc:')) return { url: docUrl(raw.slice(4)), external: false };
+  if (raw.startsWith('doc:')) return { url: docUrl(raw.slice(4)), external: true };
   if (raw.startsWith('route:')) return { url: href(R[raw.slice(6) as RouteKey]), external: false };
   if (raw.startsWith('/')) return { url: href(raw), external: false };
   if (raw.startsWith('mailto:') || raw.startsWith('tel:') || raw.startsWith('#')) return { url: raw, external: false };

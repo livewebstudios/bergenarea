@@ -34,24 +34,28 @@ const schema = areas.flatMap((a) => ev[a.key].upcoming).map((e) => ({
   <script slot="head" type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />
   <PageHead h1={p.h1} scene="fireworks" seed={19} />
 
-  <section class="d1-band grain">
+  <section class="d1-band d1-band--sand grain">
     <div class="wrap pg-prose pg-prose--center">
       <h2 class="d1-display pg-h2">{p.h2}</h2>
       {p.body.map((part) => <Rich parts={part} />)}
     </div>
   </section>
 
-  {areas.map((a, i) => (
-    <section id={a.key} class={`d1-band grain ev-area ev-area--${a.tint}${i % 2 === 0 ? ' d1-band--sand' : ''}`}>
-      <div class="wrap">
-        <div class="ev-area__head">
-          <div class="ev-area__art"><Scene slot={a.slot} /></div>
-          <h2 class="d1-display pg-h2">{a.label}</h2>
-        </div>
-        <EventList items={ev[a.key].upcoming} />
+  <section class="d1-band grain ev-cols-band">
+    <div class="wrap">
+      <div class="ev-cols">
+        {areas.map((a) => (
+          <div id={a.key} class={`ev-col ev-area--${a.tint}`}>
+            <div class="ev-area__head">
+              <div class="ev-area__art"><Scene slot={a.slot} /></div>
+              <h2 class="d1-display ev-col__title">{a.label}</h2>
+            </div>
+            <EventList items={ev[a.key].upcoming} limit={a.key === 'area' ? 3 : 12} />
+          </div>
+        ))}
       </div>
-    </section>
-  ))}
+    </div>
+  </section>
 
   <section id="archive" class="d1-band grain">
     <div class="wrap">
