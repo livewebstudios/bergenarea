@@ -6,7 +6,6 @@ import VideoPoster from '../components/shared/VideoPoster.astro';
 import { Scene } from '../components/shared/Scene';
 import { Icon } from '../components/shared/icons/Icon';
 import { Dotted, Underline } from '../components/shared/Rough';
-import HomeFinder from '../components/site/HomeFinder';
 import { deck, ui } from '../content/deck';
 import { href, route } from '../lib/href';
 import { loadMeetings } from '../lib/load';
@@ -15,7 +14,6 @@ import { loadHome } from '../lib/home';
 const buildNow = new Date();
 const data = await loadMeetings();
 const home = loadHome(buildNow);
-const FINDER = '#meetings';
 const areas = [
   { key: 'area', label: ui.upcomingMeetings, tint: 'mint', slot: 'table', items: home.area },
   { key: 'convention', label: ui.convention, tint: 'tan', slot: 'fireworks', items: home.convention },
@@ -30,21 +28,25 @@ const areas = [
       <div class="wrap d1-hero__text">
         <p class="d1-kicker" data-deck="kicker">{deck.hero.kicker}</p>
         <h1 class="d1-display d1-hero__title" data-deck="h1">{deck.hero.h1}</h1>
-        <a class="d1-btn d1-btn--lg" href={FINDER}><span data-deck="hero-button">{deck.hero.button}</span><Icon name="arrow" /></a>
+        <a class="d1-btn d1-btn--lg" href={route('meetings')}><span data-deck="hero-button">{deck.hero.button}</span><Icon name="arrow" /></a>
       </div>
       <div class="d1-hero__scene"><Scene slot="hero-river" anchor="left" eager /></div>
       <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
     </section>
 
-    <section id="meetings" class="d1-band d1-band--sand grain" data-path-stop>
+    <section class="d1-band d1-band--sand grain" data-path-stop>
       <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
-      <div class="wrap d1-today">
-        <div class="d1-today__card">
-          <HomeFinder client:load meetings={data.meetings} buildNow={buildNow.getTime()} />
+      <div class="wrap">
+        <div class="d1-about">
+          <div class="d1-about__art"><Scene slot="keytag" /></div>
+          <div class="d1-about__text">
+            <p data-deck="about-p1">{deck.about.first.map((part) => (part.bold ? <strong>{part.text}</strong> : part.text))}</p>
+            {deck.about.rest.map((p, i) => <p data-deck={`about-p${i + 2}`}>{p}</p>)}
+          </div>
         </div>
-        <div class="d1-today__art"><Scene slot="chairs" pin={[965, 800, 0.9]} /></div>
       </div>
     </section>
+
 
     <section class="d1-band grain" data-path-stop>
       <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
@@ -112,18 +114,6 @@ const areas = [
       </div>
     </section>
 
-    <section class="d1-band grain" data-path-stop>
-      <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>
-      <div class="wrap">
-        <div class="d1-about">
-          <div class="d1-about__art"><Scene slot="keytag" /></div>
-          <div class="d1-about__text">
-            <p data-deck="about-p1">{deck.about.first.map((part) => (part.bold ? <strong>{part.text}</strong> : part.text))}</p>
-            {deck.about.rest.map((p, i) => <p data-deck={`about-p${i + 2}`}>{p}</p>)}
-          </div>
-        </div>
-      </div>
-    </section>
 
     <section class="d1-band d1-band--video grain" data-path-stop>
       <svg class="d1-path" data-path-svg aria-hidden="true" focusable="false"></svg>

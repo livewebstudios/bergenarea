@@ -18,15 +18,13 @@
 .mf-head { margin-block: var(--space-3) var(--space-5); }
 @media (min-width: 62rem) { .mf-head { padding-right: 0; } }
 .mf-row__day { display: block; font-family: var(--font-body); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rust); }
-.mf-wc, .mf-saved {
+.mf-wc {
   display: inline-flex; align-items: center; min-height: 1.5rem; padding: 0 0.5rem; border-radius: var(--radius-pill);
   font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em;
 }
 .mf-wc { border: 1.5px solid var(--ink); }
-.mf-saved { background: var(--sky); }
 .mf-groups { display: grid; gap: var(--space-6); margin-top: var(--space-5); }
 .mf-group__title { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem); margin-bottom: var(--space-3); }
-.mf-note { margin-block: var(--space-4); padding: var(--space-4); background: var(--butter); border-radius: var(--radius-card); }
 .mf-after { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-4); margin-top: var(--space-5); }
 .mf-report { font-weight: 600; }
 .mf-report a { color: var(--teal); }

@@ -1,10 +1,9 @@
 // The full meeting finder on /meetings/. Same engine as the home finder (useFinder), plus
-// views by town, by distance and on a map, a format filter, text search and favorites.
-// Location is asked for only when "Near me" is tapped, used once, and never stored.
+// views by town and on a map, a format filter and text search.
 // Leaflet and its tiles load only when the map view is opened.
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { Meeting } from '../../lib/bmlt';
-import { dayLabel, dayName, dayShort, placeLine, telHref, useFinder, venueLabel } from '../../lib/finder';
+import { dayLabel, dayName, dayShort, placeLine, telHref, townNJ, useFinder, venueLabel } from '../../lib/finder';
 import { isInPerson, isVirtual } from '../../lib/bmlt';
 import { deck, ui } from '../../content/deck';
 import { meetingsPage } from '../../content/pages';
@@ -12,31 +11,13 @@ import { Dialog } from '../shared/Dialog';
 import { Circled } from '../shared/Rough';
 import { Icon } from '../shared/icons/Icon';
 
-type View = 'day' | 'town' | 'near' | 'map' | 'fav';
+type View = 'day' | 'town' | 'map';
 
 interface Props {
   meetings: Meeting[];
   buildNow: number;
   /** resolved page addresses, so the island never needs the base path */
   links: { contact: string; printable: string; seventh: string };
-}
-
-const FAV_KEY = 'ba-favorites';
-function readFavs(): string[] {
-  try { return JSON.parse(window.localStorage.getItem(FAV_KEY) || '[]').filter((x: unknown) => typeof x === 'string'); } catch { return []; }
-}
-function writeFavs(ids: string[]) {
-  try { window.localStorage.setItem(FAV_KEY, JSON.stringify(ids)); } catch { /* storage blocked: favorites last until the tab closes */ }
-}
-
-/** Straight-line miles between two points. */
-function miles(a: [number, number], b: [number, number]): number {
-  const R = 3958.8;
-  const rad = (d: number) => (d * Math.PI) / 180;
-  const dLat = rad(b[0] - a[0]);
-  const dLng = rad(b[1] - a[1]);
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a[0])) * Math.cos(rad(b[0])) * Math.sin(dLng / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(h));
 }
 
 const lower = (s: string) => s.toLocaleLowerCase('en-US');
@@ -46,17 +27,13 @@ export default function MeetingFinder({ meetings, buildNow, links }: Props) {
   const [view, setView] = useState<View>('day');
   const [format, setFormat] = useState('');
   const [query, setQuery] = useState('');
-  const [favs, setFavs] = useState<string[]>([]);
-  const [here, setHere] = useState<[number, number] | null>(null);
-  const [locating, setLocating] = useState<'idle' | 'busy' | 'failed'>('idle');
   const titleId = useId();
   const searchId = useId();
   const formatId = useId();
   const townId = useId();
   const d = f.detail;
 
-  // favorites and the shareable ?id= address, after hydration
-  useEffect(() => { setFavs(readFavs()); }, []);
+  // the shareable ?id= address, after hydration
   const openedFromUrl = useRef(false);
   useEffect(() => {
     if (openedFromUrl.current) return;
@@ -71,14 +48,6 @@ export default function MeetingFinder({ meetings, buildNow, links }: Props) {
     if (d) url.searchParams.set('id', d.id); else url.searchParams.delete('id');
     window.history.replaceState(null, '', url);
   }, [d]);
-
-  const toggleFav = useCallback((id: string) => {
-    setFavs((cur) => {
-      const next = cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id];
-      writeFavs(next);
-      return next;
-    });
-  }, []);
 
   const formats = useMemo(() => {
     const seen = new Map<string, string>();
@@ -101,39 +70,18 @@ export default function MeetingFinder({ meetings, buildNow, links }: Props) {
   const byTown = useMemo(() => {
     const groups = new Map<string, Meeting[]>();
     for (const m of week) {
-      const key = m.venue === 'virtual' ? ui.virtual : m.town || ui.virtual;
+      const key = m.venue === 'virtual' || !m.town ? ui.virtual : townNJ(m.town);
       groups.set(key, [...(groups.get(key) ?? []), m]);
     }
     return [...groups].sort(([a], [b]) => (a === ui.virtual ? 1 : b === ui.virtual ? -1 : a.localeCompare(b)));
   }, [week]);
-  const near = useMemo(() => {
-    if (!here) return [];
-    return week
-      .filter((m) => m.venue !== 'virtual' && m.lat !== null && m.lng !== null)
-      .map((m) => ({ m, mi: miles(here, [m.lat as number, m.lng as number]) }))
-      .sort((a, b) => a.mi - b.mi || a.m.day - b.m.day || a.m.start - b.m.start);
-  }, [week, here]);
-  const favList = useMemo(() => week.filter((m) => favs.includes(m.id)), [week, favs]);
+  const shownCount = view === 'day' ? dayList.length : week.length;
+  const viewName = { day: dayLabel(f.day, f.todayIdx, f.live), town: ui.byTown, map: ui.map }[view];
 
-  const askLocation = () => {
-    setView('near');
-    if (here) return;
-    if (!('geolocation' in navigator)) { setLocating('failed'); return; }
-    setLocating('busy');
-    navigator.geolocation.getCurrentPosition(
-      (pos) => { setHere([pos.coords.latitude, pos.coords.longitude]); setLocating('idle'); },
-      () => setLocating('failed'),
-      { enableHighAccuracy: false, timeout: 15000, maximumAge: 600000 },
-    );
-  };
-
-  const shownCount = view === 'day' ? dayList.length : view === 'near' ? near.length : view === 'fav' ? favList.length : week.length;
-  const viewName = { day: dayLabel(f.day, f.todayIdx, f.live), town: ui.byTown, near: ui.nearMe, map: ui.map, fav: ui.favorites }[view];
-
-  const row = (m: Meeting, opts: { withDay?: boolean; mi?: number } = {}) => {
+  const row = (m: Meeting, opts: { withDay?: boolean } = {}) => {
     const st = f.status(m);
     return (
-      <li key={`${m.id}-${opts.mi ?? ''}`}>
+      <li key={m.id}>
         <button type="button" className={`d1-row mf-row${st ? ` d1-row--${st}` : ''}`} onClick={() => f.setDetail(m)} aria-haspopup="dialog">
           <span className="d1-row__time d1-display">
             {opts.withDay && <span className="mf-row__day">{dayName(m.day)}</span>}
@@ -143,10 +91,9 @@ export default function MeetingFinder({ meetings, buildNow, links }: Props) {
             {st && <span className="d1-row__flag">{st === 'now' ? ui.happeningNow : ui.nextMeeting}</span>}
             <span className="d1-row__name">{m.name}</span>
             {m.wheelchair && <span className="mf-wc" title={ui.wheelchair}><span aria-hidden="true">WC</span><span className="sr-only">{ui.wheelchair}</span></span>}
-            {favs.includes(m.id) && <span className="mf-saved">{ui.saved}</span>}
           </span>
           <span className="d1-row__place">{placeLine(m)}</span>
-          <span className="d1-row__town">{opts.mi !== undefined ? ui.miles(opts.mi) : m.venue === 'virtual' ? '' : m.town}</span>
+          <span className="d1-row__town">{m.venue === 'virtual' ? '' : townNJ(m.town)}</span>
           <Icon name="arrow" className="d1-row__go" />
         </button>
       </li>
@@ -154,14 +101,12 @@ export default function MeetingFinder({ meetings, buildNow, links }: Props) {
   };
 
   const rows = (list: Meeting[], withDay: boolean) =>
-    list.length === 0 ? <p className="d1-none">{view === 'fav' ? ui.noFavorites : ui.noMeetings}</p> : <ul className="d1-rows">{list.map((m) => row(m, { withDay }))}</ul>;
+    list.length === 0 ? <p className="d1-none">{ui.noMeetings}</p> : <ul className="d1-rows">{list.map((m) => row(m, { withDay }))}</ul>;
 
-  const views: { key: View; label: string; icon: 'calendar' | 'pin' | 'door' | 'keytag' }[] = [
+  const views: { key: View; label: string; icon: 'calendar' | 'pin' | 'door' }[] = [
     { key: 'day', label: ui.byDay, icon: 'calendar' },
     { key: 'town', label: ui.byTown, icon: 'door' },
-    { key: 'near', label: ui.nearMe, icon: 'pin' },
     { key: 'map', label: ui.map, icon: 'pin' },
-    { key: 'fav', label: ui.favorites, icon: 'keytag' },
   ];
 
   return (
@@ -169,7 +114,7 @@ export default function MeetingFinder({ meetings, buildNow, links }: Props) {
       <div className="d1-finder mf">
         <div className="mf-views" role="group" aria-label={ui.menu}>
           {views.map((v) => (
-            <button key={v.key} type="button" className="d1-chip mf-view" aria-pressed={view === v.key} onClick={() => (v.key === 'near' ? askLocation() : setView(v.key))}>
+            <button key={v.key} type="button" className="d1-chip mf-view" aria-pressed={view === v.key} onClick={() => setView(v.key)}>
               <Icon name={v.icon} />{v.label}
             </button>
           ))}
@@ -189,7 +134,7 @@ export default function MeetingFinder({ meetings, buildNow, links }: Props) {
             <label htmlFor={townId} className="sr-only">{ui.allTowns}</label>
             <select id={townId} value={f.town} onChange={(e) => f.setTown(e.target.value)}>
               <option value="">{ui.allTowns}</option>
-              {f.townList.map((t) => <option key={t} value={t}>{t}</option>)}
+              {f.townList.map((t) => <option key={t} value={t}>{townNJ(t)}</option>)}
             </select>
           </div>
           <div className="d1-town">
@@ -235,16 +180,8 @@ export default function MeetingFinder({ meetings, buildNow, links }: Props) {
           )
         )}
 
-        {view === 'near' && (
-          locating === 'busy' ? <p className="d1-none">{ui.findingYou}</p>
-            : locating === 'failed' || !here ? <><p className="mf-note">{ui.noLocation}</p>{rows(dayList, false)}</>
-            : near.length === 0 ? <p className="d1-none">{ui.noMeetings}</p>
-            : <ul className="d1-rows">{near.map(({ m, mi }) => row(m, { withDay: true, mi }))}</ul>
-        )}
-
         {view === 'map' && <MeetingMap meetings={week} onPick={(m) => f.setDetail(m)} />}
 
-        {view === 'fav' && rows(favList, true)}
       </div>
 
       <p className="d1-count" data-deck="count">{deck.meetings.countSentence(f.counts.groups, f.counts.meetings)}</p>
@@ -281,9 +218,6 @@ export default function MeetingFinder({ meetings, buildNow, links }: Props) {
               {d.mapUrl && <a className="d1-btn" href={d.mapUrl} target="_blank" rel="noopener noreferrer">{ui.directions}<Icon name="arrow" /></a>}
               {d.virtualLink && <a className="d1-btn" href={d.virtualLink} target="_blank" rel="noopener noreferrer">{ui.joinZoom}<Icon name="arrow" /></a>}
               {d.phone && <a className="d1-btn d1-btn--quiet" href={telHref(d.phone)}><Icon name="phone" />{ui.callIn} {d.phone}</a>}
-              <button type="button" className="d1-btn d1-btn--quiet" aria-pressed={favs.includes(d.id)} onClick={() => toggleFav(d.id)}>
-                <Icon name="keytag" />{favs.includes(d.id) ? ui.saved : ui.save}
-              </button>
             </div>
             <p className="mf-report">
               <a className="tap-link" href={`${links.contact}?topic=meeting&meeting=${encodeURIComponent(`${d.name}, ${dayName(d.day)} ${d.timeLabel}`)}#form`}>{ui.reportUpdate}</a>

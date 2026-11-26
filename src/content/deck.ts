@@ -3,6 +3,8 @@
 // All three demos import it, so the Area compares design, not wording.
 // This file is exempt from the kill-list scan because it is quoted source text.
 
+import { townNJ } from '../lib/town';
+
 export interface DeckLink { label: string; href: string }
 
 export const deck = {
@@ -65,8 +67,8 @@ export const deck = {
 
   meetings: {
     heading: 'MEETINGS',
-    /** `Serving the communities of {towns}.` filled live, A to Z, comma separated */
-    townsSentence: (towns: string[]) => `Serving the communities of ${towns.join(', ')}.`,
+    /** `Serving the communities of {towns}.` filled live, A to Z, comma separated. Each town carries ", NJ" (Jon, Nov 26). */
+    townsSentence: (towns: string[]) => `Serving the communities of ${towns.map(townNJ).join(', ')}.`,
     townsFallback: [
       'Allendale', 'Bogota', 'Dumont', 'Englewood', 'Fair Lawn', 'Fort Lee', 'Hackensack', 'Hasbrouck Heights',
       'Leonia', 'Midland Park', 'Paramus', 'Ramsey', 'Ridgefield', 'Ridgewood', 'River Edge', 'Teaneck',
@@ -166,18 +168,10 @@ export const ui = {
   // and Report an Update (content pack section 13 names the page "Report an Update").
   byDay: 'By day',
   byTown: 'By town',
-  nearMe: 'Near me',
   map: 'Map',
-  favorites: 'Favorites',
   search: 'Search',
   allFormats: 'All formats',
   reportUpdate: 'Report an Update',
-  miles: (n: number) => `${n < 10 ? n.toFixed(1) : Math.round(n)} miles`,
-  findingYou: 'Finding your location',
-  noLocation: 'Your location is not available. Meetings are sorted by day instead.',
-  save: 'Save',
-  saved: 'Saved',
-  noFavorites: 'No favorites saved yet.',
   printOrSave: 'Print or save as PDF',
   printed: 'Printed',
 } as const;

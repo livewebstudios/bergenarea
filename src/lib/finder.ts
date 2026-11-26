@@ -8,6 +8,8 @@ import {
 } from './bmlt';
 import { DAY_NAMES, DAY_SHORT, formatClock, nyWeekday } from './time';
 import { ui } from '../content/deck';
+import { townNJ } from './town';
+export { townNJ };
 
 export type VenueFilter = 'all' | 'in-person' | 'virtual';
 export type Status = 'now' | 'next' | undefined;
@@ -112,7 +114,7 @@ export function venueLabel(m: Meeting): string {
 
 /** Where a meeting is, in one short line for a list row. */
 export function placeLine(m: Meeting): string {
-  if (m.venue === 'virtual') return m.town ? `${ui.virtual} (${m.town})` : ui.virtual;
+  if (m.venue === 'virtual') return m.town ? `${ui.virtual} (${townNJ(m.town)})` : ui.virtual;
   return m.locationName || m.address;
 }
 
