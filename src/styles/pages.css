@@ -135,20 +135,6 @@
 .ev-archive[open] { padding-bottom: var(--space-6); }
 .ev-archive .ev { opacity: 0.85; }
 
-/* daily readings */
-.rd { max-width: 44rem; margin-inline: auto; padding: clamp(1.5rem, 1rem + 3vw, 3.5rem); background: var(--white); border-radius: var(--radius-card); box-shadow: 0 0 0 0.75rem var(--sand); }
-.rd__loading { text-align: center; font-size: 2rem; color: var(--muted); min-height: 30rem; }
-.rd__fail { text-align: center; }
-.rd__body { display: grid; gap: var(--space-4); }
-.rd__date { font-size: 0.875rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rust); }
-.rd__title { font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.5rem); }
-.rd__page { color: var(--muted); font-size: 0.9375rem; }
-.rd__quote { margin: 0; padding: var(--space-5); background: var(--mint); border-radius: var(--radius-card); font-size: 1.125rem; }
-.rd__quote footer { margin-top: var(--space-2); font-size: 0.9375rem; color: var(--forest); font-weight: 600; }
-.rd__content { display: grid; gap: var(--space-4); font-size: 1.0625rem; }
-.rd__thought { padding: var(--space-5); background: var(--butter); border-radius: var(--radius-card); font-weight: 600; font-size: 1.0625rem; }
-.rd__copy { font-size: 0.8125rem; color: var(--muted); }
-
 /* cleantime */
 .ct-card { max-width: 40rem; margin-inline: auto; }
 .ct { display: grid; gap: var(--space-4); justify-items: center; text-align: center; }

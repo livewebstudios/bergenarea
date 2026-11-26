@@ -103,10 +103,10 @@ export const publicPage = {
   },
 };
 
+// The daily readings live on na.org. The menu links straight there (Jon, Nov 26).
 export const readings = {
-  // If the day's reading cannot be fetched, the page links to na.org (full-site spec section 9).
-  jft: { h1: 'Just For Today', fn: 'jft', fallback: 'https://na.org/' },
-  spad: { h1: 'Spiritual Principle A Day', fn: 'spad', fallback: 'https://na.org/' },
+  jft: 'https://na.org/jftna/',
+  spad: 'https://na.org/daily-meditations/spad/',
 };
 
 export const cleantimePage = {

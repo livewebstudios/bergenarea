@@ -22,8 +22,6 @@ export const R = {
   rcm: 'service/rcm/',
   events: 'events/',
   public: 'for-the-public/',
-  jft: 'jft/',
-  spad: 'spad/',
   cleantime: 'cleantime/',
   startDates: 'group-start-dates/',
   contact: 'contact-us/',

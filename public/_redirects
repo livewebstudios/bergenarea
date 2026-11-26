@@ -10,6 +10,10 @@
 /feed/*                                    /events/               301
 /report-an-update/*                        /contact-us/?topic=meeting    301
 /report-an-update                          /contact-us/?topic=meeting    301
+/jft/*                                     https://na.org/jftna/                   301
+/jft                                       https://na.org/jftna/                   301
+/spad/*                                    https://na.org/daily-meditations/spad/  301
+/spad                                      https://na.org/daily-meditations/spad/  301
 /  current-meeting-list=:id                /meetings/printable/   301!
 
 # Old document addresses -> /docs/

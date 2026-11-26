@@ -51,7 +51,9 @@ const notice = noticeFile as Notice;
                 <>
                   <button type="button" data-sub-toggle aria-expanded="false">{item.label}</button>
                   <ul class="d1-nav__sub">
-                    {item.children.map((child) => <li><a href={href(child.path)} aria-current={child.path === here ? 'page' : undefined}>{child.label}</a></li>)}
+                    {item.children.map((child) => <li>{child.url
+                      ? <a href={child.url} target="_blank" rel="noopener noreferrer">{child.label}</a>
+                      : <a href={href(child.path)} aria-current={child.path === here ? 'page' : undefined}>{child.label}</a>}</li>)}
                   </ul>
                 </>
               ) : (
