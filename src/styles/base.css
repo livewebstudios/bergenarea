@@ -40,7 +40,7 @@ strong { font-weight: 600; }
 /* Scene: wash + ink + pin. Colors come from --scene-* set by each demo.
    The three layers fill one frame and crop the same way, so they stay registered.
    Nothing here creates a stacking context: the ink multiplies against whatever is under it. */
-.scene { position: relative; display: block; width: 100%; overflow: hidden; }
+.scene { position: relative; display: block; width: 100%; overflow: hidden; pointer-events: none; }
 .scene--21x9 { aspect-ratio: 21 / 9; }
 .scene--4x3 { aspect-ratio: 4 / 3; }
 .scene--1x1 { aspect-ratio: 1 / 1; }
