@@ -17,9 +17,12 @@ export default function Notice({ notice, page = 'home' }: { notice: Notice; page
           <div className="d1-notice__body">
             <p className="d1-notice__kicker">{ui.notice}</p>
             <h2 id={titleId} className="d1-display d1-notice__title">{notice.title}</h2>
-            <p className="d1-notice__text">{notice.body}</p>
+            {notice.body.split('\n').filter(Boolean).map((line, i) => <p key={i} className="d1-notice__text">{line}</p>)}
             {notice.button_url && notice.button_label && (
-              <a className="d1-btn" href={notice.button_url} target="_blank" rel="noopener noreferrer">{notice.button_label}<Icon name="arrow" /></a>
+              // a page on this site opens in place; anywhere else opens in a new tab
+              notice.button_url.startsWith('/')
+                ? <a className="d1-btn" href={href(notice.button_url)}>{notice.button_label}<Icon name="arrow" /></a>
+                : <a className="d1-btn" href={notice.button_url} target="_blank" rel="noopener noreferrer">{notice.button_label}<Icon name="arrow" /></a>
             )}
           </div>
           <button type="button" className="d1-notice__close" onClick={close}><Icon name="close" /><span>{ui.close}</span></button>

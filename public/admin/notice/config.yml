@@ -27,7 +27,7 @@ collections:
           - {label: "Id", name: "id", widget: "hidden", default: ""}
           - {label: "On", name: "enabled", widget: "boolean", default: false, hint: "Turn this off to hide the popup everywhere, whatever the dates say."}
           - {label: "Title", name: "title", widget: "string", hint: "Short. Example: New Year New Life 34"}
-          - {label: "Message", name: "body", widget: "text", hint: "Short, plain text. Example: Dec 31, 12:00 PM - Jan 2, 1:00 PM (EST)"}
+          - {label: "Message", name: "body", widget: "text", hint: "Short, plain text. Each new line shows as its own line. Example: Dec 31, 12:00 PM - Jan 2, 1:00 PM (EST)"}
           - {label: "Picture", name: "image", widget: "image", required: false, hint: "Optional. No people, no faces. No personal phone numbers or addresses. Example: a flyer or a simple graphic."}
           - {label: "Picture description", name: "image_alt", widget: "string", required: false, hint: "Optional, but fill it in when there is a picture. Example: Flyer for New Year New Life 34"}
           - {label: "Button label", name: "button_label", widget: "string", required: false, hint: "Optional. Example: Convention website"}

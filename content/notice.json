@@ -1,15 +1,15 @@
 {
   "enabled": true,
-  "id": "nynl33",
-  "style": "celebration",
-  "title": "New Year New Life 33",
-  "body": "Dec 31, 12:00 PM - Jan 2, 1:00 PM (EST)",
+  "id": "area-service-2026-12-15",
+  "style": "info",
+  "title": "Area Service, Tuesday, Dec 15",
+  "body": "At the next Area Service we will be discussing making this new website live.\nTuesday, December 15, 7:30 PM\nWestwood United Methodist Church, 105 Fairview Ave, Westwood, NJ 07675",
   "image": "",
   "image_alt": "",
-  "button_label": "New Year New Life (Bergen Area’s New Year’s Eve Convention)",
-  "button_url": "http://www.newyearnewlife.org/",
-  "start": "2026-11-24",
-  "end": "2027-01-02",
+  "button_label": "AREA SERVICE",
+  "button_url": "/service/",
+  "start": "2026-11-26",
+  "end": "2026-12-15",
   "frequency": "once",
   "scope": "home"
 }
